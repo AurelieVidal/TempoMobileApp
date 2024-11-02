@@ -1,0 +1,82 @@
+# Configurations de base
+build:
+  maxIssues: 0
+  excludeCorrectable: true
+
+# Suppression des messages dans les rapports
+console-reports:
+  active: true
+
+# Style - Règles de style de code
+style:
+  MagicNumber:
+    active: false
+    ignoreNumbers: [-1, 0, 1, 2]
+    ignoreHashCodeFunction: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+    excludePackageStatements: true
+    excludeImportStatements: true
+  WildcardImport:
+    active: true
+    excludeImports:
+      - "java.util.*"
+      - "kotlinx.coroutines.*"
+
+# Complexity - Complexité du code
+complexity:
+  CyclomaticComplexMethod: # Nom de règle mis à jour
+    active: true
+    threshold: 10
+  LongParameterList:
+    active: true
+    functionThreshold: 5 # Utilisation de `functionThreshold` et `constructorThreshold` pour remplacer `threshold`
+    constructorThreshold: 3
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 10
+
+# Empty - Détection des blocs vides
+empty-blocks:
+  active: true
+  EmptyCatchBlock:
+    active: true
+  EmptyIfBlock:
+    active: true
+  EmptyElseBlock:
+    active: true
+
+# Naming - Convention de nommage
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '^[a-z][A-Za-z0-9]*$'
+  ClassNaming:
+    active: true
+    classPattern: '^[A-Z][a-zA-Z0-9]*$'
+  VariableNaming:
+    active: true
+    variablePattern: '^[a-z][A-Za-z0-9]*$'
+
+# Documentation - Règles de documentation
+comments:
+  CommentOverPrivateFunction:
+    active: true
+  UndocumentedPublicClass:
+    active: true
+  UndocumentedPublicFunction:
+    active: false
+
+# Potential Bugs - Détection de potentiels bugs
+potential-bugs:
+  UnsafeCallOnNullableType:
+    active: true
+
+# Performance - Optimisation des performances
+performance:
+  SpreadOperator:
+    active: true

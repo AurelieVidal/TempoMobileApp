@@ -1,7 +1,30 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$projectDir/config/detekt.yml")
+    baseline = file("$projectDir/config/baseline.xml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html.required.set(true) // Génère un rapport HTML
+        xml.required.set(true) // Génère un rapport XML pour Jenkins ou autres intégrations
+        sarif.required.set(true) // Génère un rapport SARIF pour GitHub
+        md.required.set(true) // Génère un rapport en Markdown
+    }
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = "11" // Utilise la version JVM ciblée par ton projet
 }
 
 android {
@@ -64,4 +87,5 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
 }
