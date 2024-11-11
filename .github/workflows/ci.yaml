@@ -61,7 +61,7 @@ jobs:
           api-level: 30  # Utilise la version API souhaitée
           target: google_apis
           arch: x86_64
-          profile: Pixel_3  # Modèle de l'émulateur
+          profile: pixel  # Modèle de l'émulateur
           emulator-options: "-no-window -no-boot-anim"
           disable-animations: true
           script: ./gradlew connectedDebugAndroidTest
@@ -75,3 +75,15 @@ jobs:
         with:
           name: jacoco-report
           path: app/build/reports/jacoco/jacocoTestReport/html/
+
+      - name: Check JaCoCo Coverage
+        run: |
+          # Extraction du taux de couverture depuis le rapport JaCoCo HTML
+          coverage=$(grep -oP 'line-rate="\K[0-9.]*' app/build/reports/jacoco/jacocoTestReport/html/index.html)
+          echo "Current coverage: $coverage"
+          
+          # Comparer le taux de couverture à un seuil de 90%
+          if (( $(echo "$coverage < 0.90" | bc -l) )); then
+            echo "Coverage is below 90%, failing the build."
+            exit 1
+          fi
