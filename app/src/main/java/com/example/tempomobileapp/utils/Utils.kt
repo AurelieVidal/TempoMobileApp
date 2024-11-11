@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 
-fun darkenColor(color: Color, factor: Float = 0.2f): Color {
+fun getDarkenColor(color: Color, factor: Float = 0.2f): Color {
     val hsl = FloatArray(3)
     ColorUtils.colorToHSL(color.toArgb(), hsl)
 
@@ -13,7 +13,7 @@ fun darkenColor(color: Color, factor: Float = 0.2f): Color {
     return Color(ColorUtils.HSLToColor(hsl))
 }
 
-fun lightenColor(color: Color, factor: Float = 0.2f): Color {
+fun getLightenColor(color: Color, factor: Float = 0.2f): Color {
     val hsl = FloatArray(3)
     ColorUtils.colorToHSL(color.toArgb(), hsl)
 
@@ -21,5 +21,3 @@ fun lightenColor(color: Color, factor: Float = 0.2f): Color {
 
     return Color(ColorUtils.HSLToColor(hsl))
 }
-
-

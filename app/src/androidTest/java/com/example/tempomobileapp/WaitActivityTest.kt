@@ -6,7 +6,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import com.example.tempomobileapp.ui.theme.TempoMobileAppTheme
+import com.example.tempomobileapp.ui.theme.tempoMobileAppTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,8 +19,8 @@ class WaitActivityTest {
     fun testWaitLayoutIsDisplayed() {
         Log.d("Test", "Test is starting")
         composeTestRule.setContent {
-            TempoMobileAppTheme {
-                WaitLayout(name = "Android")
+            tempoMobileAppTheme {
+                waitLayout(name = "Android")
             }
         }
 
