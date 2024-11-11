@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.tempomobileapp.ui.theme.Main1
+import com.example.tempomobileapp.utils.darkenColor
+import com.example.tempomobileapp.utils.lightenColor
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Pressed

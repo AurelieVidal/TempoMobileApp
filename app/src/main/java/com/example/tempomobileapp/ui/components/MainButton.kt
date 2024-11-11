@@ -66,6 +66,8 @@ import com.example.tempomobileapp.ui.shapes.InputBorderShape
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.Purple40
 import com.example.tempomobileapp.ui.theme.background
+import com.example.tempomobileapp.utils.darkenColor
+import com.example.tempomobileapp.utils.lightenColor
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Pressed
@@ -131,25 +133,6 @@ fun MainButton(
                 .wrapContentSize(Alignment.Center)
         )
     }
-}
-
-
-fun darkenColor(color: Color, factor: Float = 0.2f): Color {
-    val hsl = FloatArray(3)
-    ColorUtils.colorToHSL(color.toArgb(), hsl)
-
-    hsl[2] = if (hsl[2] - factor >= 0f) hsl[2] - factor else 0f
-
-    return Color(ColorUtils.HSLToColor(hsl))
-}
-
-fun lightenColor(color: Color, factor: Float = 0.2f): Color {
-    val hsl = FloatArray(3)
-    ColorUtils.colorToHSL(color.toArgb(), hsl)
-
-    hsl[2] = if (hsl[2] + factor <= 1f) hsl[2] + factor else 1f
-
-    return Color(ColorUtils.HSLToColor(hsl))
 }
 
 

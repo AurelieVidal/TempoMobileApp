@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,10 +40,11 @@ import com.example.tempomobileapp.ui.theme.text
 
 @Composable
 fun WaitLayout(name: String, modifier: Modifier = Modifier) {
+    Log.d("WaitLayout", "WaitLayout is being rendered") // Add this line
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(background) // Apply background color to the Box
+            .background(background)
     ) {
         Decoration(
             modifier = Modifier
@@ -64,9 +68,15 @@ fun WaitLayout(name: String, modifier: Modifier = Modifier) {
             )
             //Spacer(modifier = Modifier.height(16.dp))
             Image(
-                painter = painterResource(id = R.drawable.name), // Replace with your icon drawable
+                painter = painterResource(id = R.drawable.name),
                 contentDescription = "App Name",
-                modifier = Modifier.size(200.dp) // Adjust size as needed
+                modifier = Modifier
+                    .size(200.dp)
+                    .semantics {
+                        // Apply semantics for testing
+                        testTag = "AppNameImage" // Assign a unique test tag
+                        contentDescription = "App Name" // Provide a content description
+                    }
             )
 
         }
