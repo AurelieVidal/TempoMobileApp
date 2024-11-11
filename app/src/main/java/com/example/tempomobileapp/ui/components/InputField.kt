@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.tempomobileapp.ui.shapes.InputBorderShape
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.Purple40
 import com.example.tempomobileapp.ui.theme.background

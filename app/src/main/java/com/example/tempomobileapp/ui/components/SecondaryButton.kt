@@ -65,7 +65,6 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColor
-import com.example.tempomobileapp.ui.shapes.InputBorderShape
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.Purple40
 import com.example.tempomobileapp.ui.theme.background

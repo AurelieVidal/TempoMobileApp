@@ -69,7 +69,6 @@ tasks.withType(org.gradle.api.tasks.testing.Test::class.java) {
     }
 }
 
-
 // Configure the JaCoCo report task to include Android tests
 tasks.register<JacocoReport>("jacocoTestReport") {
     group = "Reporting"
@@ -83,7 +82,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     sourceDirectories.setFrom(files(
-        layout.projectDirectory.dir("src/main/java"),
+        layout.projectDirectory.dir("src/main/java")
     ))
 
     classDirectories.setFrom(files(
@@ -92,13 +91,9 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         fileTree(layout.buildDirectory.dir("intermediates/javac/androidTest/debug/classes"))
     ))
 
-
-
     executionData.setFrom(
-        fileTree(layout.buildDirectory).include(
-            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-            "outputs/code_coverage/debugAndroidTest/connected/SM-A336B - 14/coverage.ec"
-        )
+        fileTree(layout.buildDirectory.dir("outputs/code_coverage/debugAndroidTest/connected")).include("**/*.ec"),
+        layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
     )
 }
 
