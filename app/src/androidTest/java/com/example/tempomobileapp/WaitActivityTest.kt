@@ -20,7 +20,7 @@ class WaitActivityTest {
         Log.d("Test", "Test is starting")
         composeTestRule.setContent {
             tempoMobileAppTheme {
-                waitLayout(name = "Android")
+                waitLayout()
             }
         }
 

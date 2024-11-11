@@ -13,7 +13,7 @@ class UtilsTest {
         val color = Color(0xFF76A9EA) // Bleu clair
 
         // Applique la fonction de réduction de luminosité
-        val darkenedColor = darkenColor(color, 0.2f)
+        val darkenedColor = getDarkenColor(color, 0.2f)
 
         // Vérifie que la couleur est plus sombre
         assert(darkenedColor.toArgb() != color.toArgb()) // La couleur devrait être différente
@@ -25,7 +25,7 @@ class UtilsTest {
         val color = Color(0xFF76A9EA) // Bleu clair
 
         // Applique la fonction d'augmentation de luminosité
-        val lightenedColor = lightenColor(color, 0.2f)
+        val lightenedColor = getLightenColor(color, 0.2f)
 
         // Vérifie que la couleur est plus claire
         assert(lightenedColor.toArgb() != color.toArgb()) // La couleur devrait être différente
@@ -37,7 +37,7 @@ class UtilsTest {
         val color = Color(0xFF000000) // Noir
 
         // Applique la fonction
-        val darkenedColor = darkenColor(color, 0.2f)
+        val darkenedColor = getDarkenColor(color, 0.2f)
 
         // La couleur devrait rester noire
         assertEquals(color.toArgb(), darkenedColor.toArgb())
@@ -49,7 +49,7 @@ class UtilsTest {
         val color = Color(0xFFFFFFFF) // Blanc
 
         // Applique la fonction
-        val lightenedColor = lightenColor(color, 0.2f)
+        val lightenedColor = getLightenColor(color, 0.2f)
 
         // La couleur devrait rester blanche
         assertEquals(color.toArgb(), lightenedColor.toArgb())
