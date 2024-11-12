@@ -74,22 +74,30 @@ jobs:
           script: ./gradlew connectedDebugAndroidTest
 
       - name: Wait for Emulator to be ready
-        timeout-minutes: 10  # Limite d'attente à 10 minutes pour éviter une longue attente
+        timeout-minutes: 10  # Limiter l'attente pour éviter les blocages
         run: |
           echo "Waiting for emulator to be ready..."
+          
           boot_completed="0"
           timeout_counter=0
+          
+          # Vérifie si l'émulateur est connecté
+          adb devices
+          
           while [ "$boot_completed" != "1" ] && [ $timeout_counter -lt ${{ env.WAIT_FOR_EMULATOR }} ]; do
             sleep 10
-            boot_completed=$(adb -e shell getprop sys.boot_completed 2>/dev/null)
+            boot_completed=$(adb -e shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
             ((timeout_counter+=10))
             echo "Still waiting... $timeout_counter seconds elapsed."
           done
+          
+          # Vérifie si l'émulateur n'a pas démarré dans le temps imparti
           if [ "$boot_completed" != "1" ]; then
-            echo "Emulator did not start in time."
+            echo "Emulator did not start in time. Exiting with error."
             exit 1
           fi
-        shell: bash
+          
+          echo "Emulator is ready!"
 
       - name: AVD cache
         uses: actions/cache@v3
