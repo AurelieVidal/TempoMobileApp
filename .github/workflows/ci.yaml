@@ -19,26 +19,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Étape pour installer Java 17
       - name: Install Java 17
         run: |
           sudo apt update
           sudo apt install openjdk-17-jdk -y
           sudo update-alternatives --config java
-          java -version  # Verify Java 17 is being used
+          java -version  # Vérifier que Java 17 est bien installé
 
-      - name: Set JAVA_HOME to Java 17
+      # Étape pour définir JAVA_HOME et mettre à jour PATH
+      - name: Set JAVA_HOME and update PATH
         run: |
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           echo "PATH=\$JAVA_HOME/bin:\$PATH" >> $GITHUB_ENV
-          echo "JAVA_HOME=$JAVA_HOME"  # Check the JAVA_HOME path
+          echo "JAVA_HOME=$JAVA_HOME"  # Vérifier que JAVA_HOME est correct
+          java -version  # Vérifier que Java 17 est maintenant accessible
 
-      - name: Verify Java version in the environment
-        run: java -version  # Confirm Java 17 is being used
-
+      # Étape pour forcer Gradle à utiliser Java 17
       - name: Set Gradle to use Java 17
         run: |
           echo "org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64" >> gradle.properties
-          cat gradle.properties  # Verify the property was added
+          cat gradle.properties  # Vérifier si la configuration a bien été ajoutée
 
       - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
