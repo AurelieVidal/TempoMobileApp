@@ -73,22 +73,9 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedDebugAndroidTest
 
-      - name: AVD cache
-        uses: actions/cache@v3
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd
-          key: avd-${{ matrix.api-level }}
-
-      - name: Create AVD snapshot
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 30
-          emulator-options: "-no-window -gpu swiftshader_indirect -no-boot-anim -noaudio -camera-back none"
-          disable-animations: true
-          script: echo "AVD snapshot for caching created."
+      - name: Wait for emulator to fully boot
+        run: |
+          adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
 
       - name: Run Unit Tests and Coverage
         run: ./gradlew clean testDebugUnitTest jacocoTestReport
