@@ -34,6 +34,9 @@ jobs:
           export PATH=$JAVA_HOME/bin:$PATH
           java -version  # Verify Java version
 
+      - name: Set Gradle's Java Home
+        run: echo "org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64" >> gradle.properties
+
       - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
 
