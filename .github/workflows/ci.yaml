@@ -40,3 +40,4 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew connectedDebugAndroidTest
+          emulator-boot-timeout: 600 # Increased timeout to 20 minutes
