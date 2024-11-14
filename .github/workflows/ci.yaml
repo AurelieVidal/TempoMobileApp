@@ -39,6 +39,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
       # Run emulator and tests
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
