@@ -64,7 +64,7 @@ jobs:
       # Vérification du rapport de couverture
       - name: Verify Jacoco Report
         run: |
-          if [ -f app/build/reports/jacoco/testDebugUnitTestCoverageReport/html/index.html ]; then
+          if [ -f app/build/reports/jacoco/jacocoTestReport/html/index.html ]; then
             echo "Jacoco Test Report generated successfully."
           else
             echo "Jacoco Test Report not found!" && exit 1
