@@ -42,11 +42,7 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # Étape pour exécuter les tests unitaires
-      - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
-
-      # Run emulator and tests
+      # Run emulator and Android tests
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -54,3 +50,17 @@ jobs:
           script: ./gradlew connectedDebugAndroidTest
           emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+
+      # Génération et fusion des rapports Jacoco
+      - name: Generate Jacoco Test Report (Unit + Android Tests)
+        run: |
+          ./gradlew jacocoTestReport
+
+      # Vérification du rapport de couverture
+      - name: Verify Jacoco Report
+        run: |
+          if [ -f app/build/reports/jacoco/testDebugUnitTestCoverageReport/html/index.html ]; then
+            echo "Jacoco Test Report generated successfully."
+          else
+            echo "Jacoco Test Report not found!" && exit 1
+          fi
