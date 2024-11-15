@@ -42,6 +42,10 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
+      # Étape pour exécuter les tests unitaires
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+
       # Run emulator and tests
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -50,4 +54,3 @@ jobs:
           script: ./gradlew connectedDebugAndroidTest
           emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          # Add AVD snapshot caching steps here (refer to documentation)
