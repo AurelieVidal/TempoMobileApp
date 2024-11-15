@@ -61,11 +61,27 @@ jobs:
           emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
 
+      - name: Install XMLLint
+        run: sudo apt-get install -y libxml2-utils
+
       # Vérification du rapport de couverture
-      - name: Verify Jacoco Report
+      - name: Verify Coverage
         run: |
           if [ -f app/build/reports/jacoco/jacocoTestReport/html/index.html ]; then
             echo "Jacoco Test Report generated successfully."
           else
             echo "Jacoco Test Report not found!" && exit 1
           fi
+          
+          # Vérification du taux de couverture
+          - name: Check Coverage Threshold
+            run: |
+              COVERAGE=$(xmllint --xpath "string(//report/counter[@type='LINE']/@covered)" app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml)
+              TOTAL=$(xmllint --xpath "string(//report/counter[@type='LINE']/@missed)" app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml)
+              TOTAL=$(($COVERAGE + $TOTAL))
+              PERCENTAGE=$((COVERAGE * 100 / TOTAL))
+              echo "Coverage is $PERCENTAGE%"
+              if [ "$PERCENTAGE" -lt 90 ]; then
+                echo "Coverage threshold not met: $PERCENTAGE% (required: 90%)"
+                exit 1
+              fi
