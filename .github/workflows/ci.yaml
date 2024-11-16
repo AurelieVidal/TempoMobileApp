@@ -85,3 +85,25 @@ jobs:
             echo "Coverage threshold not met: $PERCENTAGE% (required: 90%)"
             exit 1
           fi
+          
+      # Ajouter Detekt pour la vérification de la qualité du code
+      - name: Run Detekt for linting
+        run: ./gradlew detekt
+
+      # Vérification des rapports Detekt
+      - name: Verify Detekt Report
+        run: |
+          if [ -f app/build/reports/detekt/detekt.html ]; then
+            echo "Detekt report generated successfully."
+          else
+            echo "Detekt report not found!" && exit 1
+          fi
+
+      # Vérifier les erreurs de style avec Detekt
+      - name: Check Detekt Errors
+        run: |
+          DETEKT_EXIT_CODE=$(./gradlew detekt --quiet || echo $?)
+          if [ "$DETEKT_EXIT_CODE" -ne 0 ]; then
+            echo "Detekt found issues in the code"
+            exit $DETEKT_EXIT_CODE
+          fi
