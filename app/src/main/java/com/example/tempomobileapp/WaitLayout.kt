@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import com.example.tempomobileapp.ui.components.decoration
 import com.example.tempomobileapp.ui.theme.Main1
@@ -33,6 +31,7 @@ fun waitLayout() {
         modifier = Modifier
             .fillMaxSize()
             .background(background)
+            .testTag("waitScreen")
     ) {
         decoration(
             modifier = Modifier
@@ -58,11 +57,7 @@ fun waitLayout() {
                 contentDescription = "App Name",
                 modifier = Modifier
                     .size(200.dp)
-                    .semantics {
-                        // Apply semantics for testing
-                        testTag = "AppNameImage"
-                        contentDescription = "App Name"
-                    }
+                    .testTag("AppNameImage")
             )
         }
         decoration(
