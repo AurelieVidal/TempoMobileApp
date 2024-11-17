@@ -36,17 +36,11 @@ fun decoration(modifier: Modifier = Modifier, colors: List<Color>, animate: Bool
         remember { mutableStateListOf<Dp>(18.dp, 15.dp, 18.dp, 15.dp, 18.dp) }
 
     if (animate) {
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(1000)
-                animatedColors.shuffle()
-
-                for (i in 0 until animatedSizes.size) {
-                    animatedSizes[i] = if (animatedSizes[i] == 50.dp) 40.dp else 50.dp
-                    animatedCornerRadius[i] = if (animatedSizes[i] == 50.dp) 18.dp else 15.dp
-                }
-            }
-        }
+        animateProperties(
+            animatedColors = animatedColors,
+            animatedSizes = animatedSizes,
+            animatedCornerRadius = animatedCornerRadius
+        )
     }
 
     Box(
@@ -54,28 +48,69 @@ fun decoration(modifier: Modifier = Modifier, colors: List<Color>, animate: Bool
             .fillMaxWidth()
             .height(50.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            repeat(5) { index ->
-                val size by animateDpAsState(targetValue = animatedSizes[index])
-                val cornerRadius by animateDpAsState(targetValue = animatedCornerRadius[index])
-                val color by animateColorAsState(targetValue = animatedColors[index])
-                Box(
-                    modifier = Modifier
-                        .size(size)
-                        .neu(
-                            lightShadowColor = getLightenColor(color),
-                            darkShadowColor = getDarkenColor(color),
-                            shadowElevation = 4.dp,
-                            lightSource = LightSource.LEFT_TOP,
-                            shape = Pressed(RoundedCorner(cornerRadius))
-                        )
-                        .background(color, shape = RoundedCornerShape(cornerRadius))
-                )
+        animatedRow(
+            animatedColors = animatedColors,
+            animatedSizes = animatedSizes,
+            animatedCornerRadius = animatedCornerRadius
+        )
+    }
+}
+
+@Composable
+fun animateProperties(
+    animatedColors: MutableList<Color>,
+    animatedSizes: MutableList<Dp>,
+    animatedCornerRadius: MutableList<Dp>
+) {
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            animatedColors.shuffle()
+            for (i in animatedSizes.indices) {
+                animatedSizes[i] = if (animatedSizes[i] == 50.dp) 40.dp else 50.dp
+                animatedCornerRadius[i] = if (animatedSizes[i] == 50.dp) 18.dp else 15.dp
             }
         }
     }
+}
+
+@Composable
+fun animatedRow(
+    animatedColors: List<Color>,
+    animatedSizes: List<Dp>,
+    animatedCornerRadius: List<Dp>
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(5) { index ->
+            animatedBox(
+                color = animatedColors[index],
+                size = animatedSizes[index],
+                cornerRadius = animatedCornerRadius[index]
+            )
+        }
+    }
+}
+
+@Composable
+fun animatedBox(color: Color, size: Dp, cornerRadius: Dp) {
+    val animatedSize by animateDpAsState(targetValue = size)
+    val animatedCornerRadius by animateDpAsState(targetValue = cornerRadius)
+    val animatedColor by animateColorAsState(targetValue = color)
+
+    Box(
+        modifier = Modifier
+            .size(animatedSize)
+            .neu(
+                lightShadowColor = getLightenColor(animatedColor),
+                darkShadowColor = getDarkenColor(animatedColor),
+                shadowElevation = 4.dp,
+                lightSource = LightSource.LEFT_TOP,
+                shape = Pressed(RoundedCorner(animatedCornerRadius))
+            )
+            .background(animatedColor, shape = RoundedCornerShape(animatedCornerRadius))
+    )
 }
