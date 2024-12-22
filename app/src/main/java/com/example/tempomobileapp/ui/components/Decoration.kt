@@ -1,7 +1,10 @@
 package com.example.tempomobileapp.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.tempomobileapp.utils.getDarkenColor
@@ -29,12 +33,35 @@ import com.gandiva.neumorphic.shape.RoundedCorner
 import kotlinx.coroutines.delay
 
 @Composable
-fun decoration(modifier: Modifier = Modifier, colors: List<Color>, animate: Boolean = false) {
+fun decoration(
+    modifier: Modifier = Modifier,
+    colors: List<Color>,
+    animate: Boolean = false,
+    startingAnimation: Boolean = false
+) {
+    // Liste des états pour gérer l'apparition initiale
+    val scaleStates = remember { List(5) { Animatable(if (startingAnimation) 0f else 1f) } }
     val animatedColors = remember { mutableStateListOf<Color>().also { it.addAll(colors) } }
     val animatedSizes = remember { mutableStateListOf<Dp>(50.dp, 40.dp, 50.dp, 40.dp, 50.dp) }
     val animatedCornerRadius =
         remember { mutableStateListOf<Dp>(18.dp, 15.dp, 18.dp, 15.dp, 18.dp) }
 
+    // Déclencher l'apparition initiale uniquement si `startingAnimation` est activé
+    if (startingAnimation) {
+        LaunchedEffect(Unit) {
+            scaleStates.forEachIndexed { index, scale ->
+                scale.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(
+                        durationMillis = 200,
+                        delayMillis = index * 75 // Décalage entre chaque carré
+                    )
+                )
+            }
+        }
+    }
+
+    // Une fois les carrés apparus, démarrer l'animation infinie si `animate` est activé
     if (animate) {
         animateProperties(
             animatedColors = animatedColors,
@@ -51,7 +78,8 @@ fun decoration(modifier: Modifier = Modifier, colors: List<Color>, animate: Bool
         animatedRow(
             animatedColors = animatedColors,
             animatedSizes = animatedSizes,
-            animatedCornerRadius = animatedCornerRadius
+            animatedCornerRadius = animatedCornerRadius,
+            scaleStates = scaleStates
         )
     }
 }
@@ -63,6 +91,7 @@ fun animateProperties(
     animatedCornerRadius: MutableList<Dp>
 ) {
     LaunchedEffect(Unit) {
+        delay(1000);
         while (true) {
             delay(1000)
             animatedColors.shuffle()
@@ -78,7 +107,8 @@ fun animateProperties(
 fun animatedRow(
     animatedColors: List<Color>,
     animatedSizes: List<Dp>,
-    animatedCornerRadius: List<Dp>
+    animatedCornerRadius: List<Dp>,
+    scaleStates: List<Animatable<Float, AnimationVector1D>>
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -89,14 +119,15 @@ fun animatedRow(
             animatedBox(
                 color = animatedColors[index],
                 size = animatedSizes[index],
-                cornerRadius = animatedCornerRadius[index]
+                cornerRadius = animatedCornerRadius[index],
+                scale = scaleStates[index].value
             )
         }
     }
 }
 
 @Composable
-fun animatedBox(color: Color, size: Dp, cornerRadius: Dp) {
+fun animatedBox(color: Color, size: Dp, cornerRadius: Dp, scale: Float) {
     val animatedSize by animateDpAsState(targetValue = size)
     val animatedCornerRadius by animateDpAsState(targetValue = cornerRadius)
     val animatedColor by animateColorAsState(targetValue = color)
@@ -104,6 +135,7 @@ fun animatedBox(color: Color, size: Dp, cornerRadius: Dp) {
     Box(
         modifier = Modifier
             .size(animatedSize)
+            .graphicsLayer(scaleX = scale, scaleY = scale) // Application du scale
             .neu(
                 lightShadowColor = getLightenColor(animatedColor),
                 darkShadowColor = getDarkenColor(animatedColor),

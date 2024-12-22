@@ -152,7 +152,8 @@ private fun passwordInput(password: String, onPasswordChange: (String) -> Unit) 
         value = password,
         onValueChange = onPasswordChange,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        isPassword = true
+        isPassword = true,
+        testTag = "passwordInputField"
     )
 }
 

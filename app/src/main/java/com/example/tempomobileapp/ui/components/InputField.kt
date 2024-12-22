@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,8 @@ fun inputField(
     value: String,
     onValueChange: (String) -> Unit,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    testTag: String = ""
 ) {
     val borderColor = Main1
     val maxLength = 20
@@ -77,13 +79,15 @@ fun inputField(
                     passwordVisibilityToggleIcon(
                         showPassword = passwordVisible,
                         onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                        iconColor = borderColor
+                        iconColor = borderColor,
+                        iconTestTag = if (passwordVisible) "hidePasswordIcon" else "showPasswordIcon"
                     )
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .background(background, shape = RoundedCornerShape(15.dp))
+                .testTag(testTag) // Ajout du testTag global pour l'inputField
         )
     }
 }
@@ -92,14 +96,18 @@ fun inputField(
 fun passwordVisibilityToggleIcon(
     showPassword: Boolean,
     onTogglePasswordVisibility: () -> Unit,
-    iconColor: Color
+    iconColor: Color,
+    iconTestTag: String
 ) {
     // Determine the icon based on password visibility
     val image = if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
     val contentDescription = if (showPassword) "Hide password icon" else "Show password icon"
 
     // IconButton to toggle password visibility
-    IconButton(onClick = onTogglePasswordVisibility) {
+    IconButton(
+        onClick = onTogglePasswordVisibility,
+        modifier = Modifier.testTag(iconTestTag) // Ajout du testTag pour l'icône
+    ) {
         Icon(imageVector = image, contentDescription = contentDescription, tint = iconColor)
     }
 }
