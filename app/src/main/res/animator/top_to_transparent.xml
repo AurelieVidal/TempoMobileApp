@@ -1,0 +1,7 @@
+<objectAnimator
+    android:duration="4000"
+    android:propertyName="scaleY"
+    android:valueFrom="1"
+    android:valueTo="0"
+    android:pivotY="100%"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

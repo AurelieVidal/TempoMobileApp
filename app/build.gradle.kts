@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("io.gitlab.arturbosch.detekt") version "1.23.7"
+    jacoco
 }
 
 detekt {
@@ -16,16 +17,18 @@ detekt {
 
 tasks.withType<Detekt>().configureEach {
     reports {
-        html.required.set(true) // Génère un rapport HTML
-        xml.required.set(true) // Génère un rapport XML pour Jenkins ou autres intégrations
-        sarif.required.set(true) // Génère un rapport SARIF pour GitHub
-        md.required.set(true) // Génère un rapport en Markdown
+        html.required.set(true)
+        xml.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
     }
 }
 
 tasks.withType<Detekt>().configureEach {
     jvmTarget = "11" // Utilise la version JVM ciblée par ton projet
 }
+
+val exclusions = listOf("null")
 
 android {
     namespace = "com.example.tempomobileapp"
@@ -42,12 +45,9 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+        debug {
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
         }
     }
     compileOptions {
@@ -62,8 +62,42 @@ android {
     }
 }
 
-dependencies {
+tasks.withType(org.gradle.api.tasks.testing.Test::class.java) {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
 
+// Configure the JaCoCo report task to include Android tests
+tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "Reporting"
+    description = "Generate JaCoCo coverage reports after running tests."
+    dependsOn(tasks.named("testDebugUnitTest"), tasks.named("connectedDebugAndroidTest"))
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    sourceDirectories.setFrom(files(
+        layout.projectDirectory.dir("src/main/java")
+    ))
+
+    classDirectories.setFrom(files(
+        fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")),
+        fileTree(layout.buildDirectory.dir("intermediates/javac/debug/classes")),
+        fileTree(layout.buildDirectory.dir("intermediates/javac/androidTest/debug/classes"))
+    ))
+
+    executionData.setFrom(
+        fileTree(layout.buildDirectory.dir("outputs/code_coverage/debugAndroidTest/connected")).include("**/*.ec"),
+        layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+    )
+}
+
+dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -73,9 +107,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui.test.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
@@ -88,4 +122,8 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.3")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
 }
