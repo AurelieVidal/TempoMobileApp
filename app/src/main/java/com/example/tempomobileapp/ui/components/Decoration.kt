@@ -39,14 +39,12 @@ fun decoration(
     animate: Boolean = false,
     startingAnimation: Boolean = false
 ) {
-    // Liste des états pour gérer l'apparition initiale
     val scaleStates = remember { List(5) { Animatable(if (startingAnimation) 0f else 1f) } }
     val animatedColors = remember { mutableStateListOf<Color>().also { it.addAll(colors) } }
     val animatedSizes = remember { mutableStateListOf<Dp>(50.dp, 40.dp, 50.dp, 40.dp, 50.dp) }
     val animatedCornerRadius =
         remember { mutableStateListOf<Dp>(18.dp, 15.dp, 18.dp, 15.dp, 18.dp) }
 
-    // Déclencher l'apparition initiale uniquement si `startingAnimation` est activé
     if (startingAnimation) {
         LaunchedEffect(Unit) {
             scaleStates.forEachIndexed { index, scale ->
@@ -54,14 +52,13 @@ fun decoration(
                     targetValue = 1f,
                     animationSpec = tween(
                         durationMillis = 200,
-                        delayMillis = index * 75 // Décalage entre chaque carré
+                        delayMillis = index * 75
                     )
                 )
             }
         }
     }
 
-    // Une fois les carrés apparus, démarrer l'animation infinie si `animate` est activé
     if (animate) {
         animateProperties(
             animatedColors = animatedColors,
@@ -91,7 +88,7 @@ fun animateProperties(
     animatedCornerRadius: MutableList<Dp>
 ) {
     LaunchedEffect(Unit) {
-        delay(1000);
+        delay(1000)
         while (true) {
             delay(1000)
             animatedColors.shuffle()
@@ -135,7 +132,7 @@ fun animatedBox(color: Color, size: Dp, cornerRadius: Dp, scale: Float) {
     Box(
         modifier = Modifier
             .size(animatedSize)
-            .graphicsLayer(scaleX = scale, scaleY = scale) // Application du scale
+            .graphicsLayer(scaleX = scale, scaleY = scale)
             .neu(
                 lightShadowColor = getLightenColor(animatedColor),
                 darkShadowColor = getDarkenColor(animatedColor),

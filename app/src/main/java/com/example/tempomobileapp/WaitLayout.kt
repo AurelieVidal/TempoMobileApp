@@ -26,13 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.res.ResourcesCompat
 import com.example.tempomobileapp.ui.components.decoration
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.Main2
@@ -49,53 +48,46 @@ fun waitLayout() {
 
     var isScalingDone by remember { mutableStateOf(false) }
     var rotationState by remember { mutableStateOf(0f) }
-    var isAnimationComplete by remember { mutableStateOf(false) } // Nouvelle variable d'état
-    var isRotationComplete by remember { mutableStateOf(false) } // Nouvelle variable d'état
+    var isAnimationComplete by remember { mutableStateOf(false) }
+    var isRotationComplete by remember { mutableStateOf(false) }
+
     val largeLogoHeight = 150.dp
     val smallLogoHeight = 111.dp
 
-
-
-    // Animation de mise à l'échelle
     val logoSize by animateDpAsState(
         targetValue = if (isScalingDone) largeLogoHeight else smallLogoHeight,
-        animationSpec = tween(durationMillis = 3000) // Durée de l'animation de scale
+        animationSpec = tween(durationMillis = 3000)
     )
 
     val logoY by animateDpAsState(
         targetValue = if (isScalingDone) 0.dp else 94.dp,
-        animationSpec = tween(durationMillis = 3000) // Durée de l'animation de scale
+        animationSpec = tween(durationMillis = 3000)
     )
 
-    // Lancer les animations dans l'ordre
     LaunchedEffect(Unit) {
-
-        isScalingDone = true // Lancer l'animation de mise à l'échelle
-        delay(3000) // Attendre la fin de la mise à l'échelle
-        isAnimationComplete = true // Déclencher la fin de l'animation après 3 secondes
-        rotationState = 180f // Lancer la rotation
+        isScalingDone = true
+        delay(3000)
+        isAnimationComplete = true
+        rotationState = 180f
     }
 
-    // Animation de rotation
     val rotation by animateFloatAsState(
         targetValue = rotationState,
-        animationSpec = tween(durationMillis = 1000) // Durée de l'animation de rotation
+        animationSpec = tween(durationMillis = 1000)
     )
 
     LaunchedEffect(rotation) {
         if (rotation == 180f) {
-            isRotationComplete = true // Rotation terminée
+            isRotationComplete = true
         }
     }
 
-    // Conteneur principal
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(background)
             .testTag("waitScreen")
     ) {
-        // Contenu principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -103,85 +95,98 @@ fun waitLayout() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo avec animation de scale et rotation
-
-            if (!isRotationComplete) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "App Icon",
-                    modifier = Modifier
-                        .size(logoSize) // Mise à l'échelle anim
-                        .offset(y = logoY)
-                        .rotate(rotation) // Rotation animée
-
-                )
-            } else {
-                // Animation de l'icône
-                AndroidView(
-                    factory = { context ->
-                        ImageView(context).apply {
-                            setImageResource(R.drawable.anim_logo) // Logo animé
-                            val animatedDrawable = drawable as? AnimatedVectorDrawable
-                            animatedDrawable?.start()
-                        }
-                    },
-                    modifier = Modifier
-                        .size(150.dp)
-                        .testTag("HourglassAnimation")
-                )
-            }
-
-            // Nom de l'application (affiché après la rotation si besoin)
-            if (!isAnimationComplete) {
-                Image(
-                    painter = painterResource(id = R.drawable.text),
-                    contentDescription = "App Name",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .testTag("AppNameImage")
-                        .offset(y = logoY)
-                        .alpha(0f)
-
-                )
-            } else {
-                // Animation de l'icône
-                AndroidView(
-                    factory = { context ->
-                        ImageView(context).apply {
-                            setImageResource(R.drawable.anim_name) // Logo animé
-                            val animatedDrawable = drawable as? AnimatedVectorDrawable
-                            animatedDrawable?.start()
-                        }
-                    },
-                    modifier = Modifier
-                        .size(200.dp)
-                        .testTag("NameAnimation")
-                        .offset(x = 8.dp)
-                )
-            }
-
-
+            logoAnimation(isRotationComplete, logoSize, logoY, rotation)
+            appNameAnimation(isAnimationComplete, logoY)
         }
 
-        // Décorations affichées après les animations (optionnel)
         if (isAnimationComplete) {
-            decoration(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 30.dp),
-                colors = listOf(Main4, Main2, Main1, Main3, Main5),
-                animate = true,
-                startingAnimation = true
-            )
-            decoration(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
-                colors = listOf(Main2, Main4, Main5, Main3, Main1),
-                animate = true,
-                startingAnimation = true
-            )
+            decorationTop()
+            decorationBottom()
         }
+    }
+}
+
+@Composable
+fun logoAnimation(isRotationComplete: Boolean, logoSize: Dp, logoY: Dp, rotation: Float) {
+    if (!isRotationComplete) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "App Icon",
+            modifier = Modifier
+                .size(logoSize)
+                .offset(y = logoY)
+                .rotate(rotation)
+        )
+    } else {
+        AndroidView(
+            factory = { context ->
+                ImageView(context).apply {
+                    setImageResource(R.drawable.anim_logo)
+                    (drawable as? AnimatedVectorDrawable)?.start()
+                }
+            },
+            modifier = Modifier
+                .size(150.dp)
+                .testTag("HourglassAnimation")
+        )
+    }
+}
+
+@Composable
+fun appNameAnimation(isAnimationComplete: Boolean, logoY: Dp) {
+    if (!isAnimationComplete) {
+        Image(
+            painter = painterResource(id = R.drawable.text),
+            contentDescription = "App Name",
+            modifier = Modifier
+                .size(200.dp)
+                .testTag("AppNameImage")
+                .offset(y = logoY)
+                .alpha(0f)
+        )
+    } else {
+        AndroidView(
+            factory = { context ->
+                ImageView(context).apply {
+                    setImageResource(R.drawable.anim_name)
+                    (drawable as? AnimatedVectorDrawable)?.start()
+                }
+            },
+            modifier = Modifier
+                .size(200.dp)
+                .testTag("NameAnimation")
+                .offset(x = 8.dp)
+        )
+    }
+}
+
+@Composable
+fun decorationTop() {
+    decoration(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp),
+        colors = listOf(Main4, Main2, Main1, Main3, Main5),
+        animate = true,
+        startingAnimation = true
+    )
+}
+
+@Composable
+fun decorationBottom() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        decoration(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+                .fillMaxWidth(),
+            colors = listOf(Main2, Main4, Main5, Main3, Main1),
+            animate = true,
+            startingAnimation = true
+
+        )
     }
 }

@@ -29,11 +29,7 @@ import com.example.tempomobileapp.ui.theme.background
 
 @Composable
 fun inputField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    isPassword: Boolean = false,
-    testTag: String = ""
+    inputFieldData: InputFieldData
 ) {
     val borderColor = Main1
     val maxLength = 20
@@ -48,18 +44,18 @@ fun inputField(
             .padding(start = 2.dp, top = 2.dp, end = 2.dp, bottom = 8.dp)
     ) {
         TextField(
-            value = value,
+            value = inputFieldData.value,
             onValueChange = { newValue ->
                 if (newValue.length <= maxLength) {
-                    onValueChange(newValue)
+                    inputFieldData.onValueChange(newValue)
                 }
             },
-            visualTransformation = if (isPassword && !passwordVisible) {
+            visualTransformation = if (inputFieldData.isPassword && !passwordVisible) {
                 PasswordVisualTransformation()
             } else {
                 VisualTransformation.None
             },
-            keyboardOptions = keyboardOptions,
+            keyboardOptions = inputFieldData.keyboardOptions,
             colors = TextFieldDefaults.colors(
                 focusedTextColor = borderColor,
                 unfocusedTextColor = borderColor,
@@ -74,8 +70,7 @@ fun inputField(
                 disabledIndicatorColor = Color.Transparent
             ),
             trailingIcon = {
-                // Password visibility toggle icon
-                if (isPassword) {
+                if (inputFieldData.isPassword) {
                     passwordVisibilityToggleIcon(
                         showPassword = passwordVisible,
                         onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
@@ -87,7 +82,7 @@ fun inputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(background, shape = RoundedCornerShape(15.dp))
-                .testTag(testTag) // Ajout du testTag global pour l'inputField
+                .testTag(inputFieldData.testTag)
         )
     }
 }
@@ -99,15 +94,24 @@ fun passwordVisibilityToggleIcon(
     iconColor: Color,
     iconTestTag: String
 ) {
-    // Determine the icon based on password visibility
     val image = if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
     val contentDescription = if (showPassword) "Hide password icon" else "Show password icon"
 
-    // IconButton to toggle password visibility
     IconButton(
         onClick = onTogglePasswordVisibility,
-        modifier = Modifier.testTag(iconTestTag) // Ajout du testTag pour l'icône
+        modifier = Modifier.testTag(iconTestTag)
     ) {
         Icon(imageVector = image, contentDescription = contentDescription, tint = iconColor)
     }
 }
+
+/**
+ * Properties of an input field
+ */
+data class InputFieldData(
+    val value: String,
+    val onValueChange: (String) -> Unit,
+    val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    val isPassword: Boolean = false,
+    val testTag: String = ""
+)

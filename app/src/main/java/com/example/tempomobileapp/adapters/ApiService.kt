@@ -7,8 +7,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 
+/**
+ * ApiService is a singleton class that provides a generic API calling mechanism with configurable timeouts.
+ * It supports setting a custom OkHttpClient for testing and handles various HTTP methods.
+ */
 class ApiService private constructor() {
-    // Client par défaut, peut être remplacé pour les tests
+
     private var client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
         .readTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
@@ -16,77 +20,92 @@ class ApiService private constructor() {
         .build()
 
     /**
-     * Permet de définir un client personnalisé (utile pour les tests).
-     * @param customClient Le client OkHttp à utiliser.
+     * Allows setting a custom OkHttpClient (useful for testing).
+     * @param customClient The OkHttp client to use.
      */
     fun setClient(customClient: OkHttpClient) {
         client = customClient
     }
 
     /**
-     * Fonction générique pour faire un appel API avec timeouts configurables.
-     * @param url URL complète de l'API.
-     * @param method Méthode HTTP (GET, POST, PUT, DELETE).
-     * @param headers Headers optionnels.
-     * @param body Corps de la requête pour les méthodes POST/PUT.
-     * @param connectTimeout Timeout de connexion en secondes (par défaut 10s).
-     * @param readTimeout Timeout de lecture en secondes (par défaut 10s).
-     * @param writeTimeout Timeout d'écriture en secondes (par défaut 10s).
-     * @return Réponse de type Response ou null en cas d'erreur.
+     * Data needed to do a request
+     */
+    data class ApiRequest(
+        val url: String,
+        val method: String = "GET",
+        val headers: Map<String, String> = emptyMap(),
+        val body: String? = null,
+        val timeout: Long = 10
+    )
+
+    /**
+     * Generic function to make an API call with configurable timeouts.
+     * @param url Complete API URL.
+     * @param method HTTP method (GET, POST, PUT, DELETE).
+     * @param headers Optional headers.
+     * @param body Request body for POST/PUT methods.
+     * @param timeout timeout in seconds (default 10s).
+     * @return Response of type Response or null in case of an error.
      */
     fun makeApiCall(
-        url: String,
-        method: String = "GET",
-        headers: Map<String, String> = emptyMap(),
-        body: String? = null,
-        connectTimeout: Long = 10,
-        readTimeout: Long = 10,
-        writeTimeout: Long = 10
+        apiRequest: ApiRequest
     ): Response? {
-        // Si les timeouts sont modifiés, créer un nouveau client
-        if (connectTimeout != 10L || readTimeout != 10L || writeTimeout != 10L) {
+        configureTimeouts(apiRequest.timeout)
+
+        val request = buildRequest(apiRequest.url, apiRequest.method, apiRequest.headers, apiRequest.body)
+
+        return executeRequest(request)
+    }
+
+    private fun configureTimeouts(timeout: Long) {
+        if (timeout != 10L) {
             client = client.newBuilder()
-                .connectTimeout(connectTimeout, java.util.concurrent.TimeUnit.SECONDS)
-                .readTimeout(readTimeout, java.util.concurrent.TimeUnit.SECONDS)
-                .writeTimeout(writeTimeout, java.util.concurrent.TimeUnit.SECONDS)
+                .connectTimeout(timeout, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(timeout, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(timeout, java.util.concurrent.TimeUnit.SECONDS)
                 .build()
         }
+    }
 
+    private fun buildRequest(
+        url: String,
+        method: String,
+        headers: Map<String, String>,
+        body: String?
+    ): Request {
         val requestBuilder = Request.Builder().url(url)
 
-        // Ajouter les headers
         headers.forEach { (key, value) ->
             requestBuilder.addHeader(key, value)
         }
 
-        // Définir la méthode
         when (method.uppercase()) {
             "GET" -> requestBuilder.get()
             "POST" -> requestBuilder.post(body?.toRequestBody() ?: "".toRequestBody())
             "PUT" -> requestBuilder.put(body?.toRequestBody() ?: "".toRequestBody())
             "DELETE" -> requestBuilder.delete()
-            else -> throw IllegalArgumentException("Méthode HTTP non supportée : $method")
+            else -> throw IllegalArgumentException("Unsupported HTTP method: $method")
         }
 
-        // Construire la requête
-        val request = requestBuilder.build()
+        return requestBuilder.build()
+    }
 
-        // Exécuter la requête
+    private fun executeRequest(request: Request): Response? {
         return try {
             val response = client.newCall(request).execute()
             if (!response.isSuccessful) {
-                // Lever une exception pour une réponse non réussie
-                throw IOException("Erreur HTTP ${response.code}: ${response.message}")
+                throw IOException("HTTP error ${response.code}: ${response.message}")
             }
             response
         } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e("ApiService", "Erreur lors de l'appel API : ${e.message}")
+            Log.e("ApiService", "Error during API call: ${e.message}")
             null
         }
     }
 
-    // Singleton
+    /**
+     * Singleton companion object for accessing the single instance of ApiService.
+     */
     companion object {
         private var instance: ApiService? = null
         fun getInstance(): ApiService {

@@ -6,19 +6,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import com.example.tempomobileapp.ui.theme.tempoMobileAppTheme
 import errorLayout
 import kotlin.system.exitProcess
 
 /**
- * HomeActivity is the main activity for the app.
+ * ErrorActivity is the main activity for the app.
  * This activity is activated when the user log in and contains access to all components of the app.
  */
 class ErrorActivity : ComponentActivity() {
@@ -33,19 +26,22 @@ class ErrorActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Companion object for holding shared static properties or methods
+     * related to ErrorActivity. The `isTesting` variable is used to adjust
+     * behavior during testing (e.g., avoid exiting the app completely).
+     */
     companion object {
         var isTesting = false
     }
 
-    // Méthode pour fermer l'application
     fun closeApplication(activity: Activity) {
         Log.d("App", "Closing application")
         if (!isTesting) {
-            activity.finishAffinity() // Ferme toutes les activités
-            exitProcess(0)  // Termine le processus
+            activity.finishAffinity()
+            exitProcess(0)
         } else {
-            activity.finish() // Ferme uniquement l'activité pour les tests
+            activity.finish()
         }
     }
 }
-

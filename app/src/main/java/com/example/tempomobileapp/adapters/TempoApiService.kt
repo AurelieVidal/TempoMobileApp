@@ -3,52 +3,53 @@ package com.example.tempomobileapp.adapters
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.IOException
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 
+/**
+ * ApiService is a singleton class that provides a Tempo API calling mechanism.
+ */
 class TempoApiService private constructor() {
 
-    private val BASE_URL = "https://tempoapi-8iou.onrender.com"
+    private val baseUrl = "https://tempoapi-8iou.onrender.com"
     private var apiService: ApiService = ApiService.getInstance()
 
-    // Fonction pour injecter un mock ApiService
     fun setApiService(mockApiService: ApiService) {
         apiService = mockApiService
     }
 
     /**
-     * Appelle une route spécifique de l'API Tempo.
-     * @param route La route de l'API (ex: "/health").
-     * @param method La méthode HTTP (GET, POST, PUT, DELETE).
-     * @param body Corps de la requête pour les méthodes POST/PUT.
-     * @return Réponse de type Response ou null en cas d'erreur.
+     * Calls a specific route from the Tempo API.
+     * @param route The API route (e.g., "/health").
+     * @param method The HTTP method (GET, POST, PUT, DELETE).
+     * @param body The request body for POST/PUT methods.
+     * @return A Response object or null in case of an error.
      */
     fun callApi(
         route: String,
         method: String = "GET",
         body: String? = null,
     ): Response? {
-        val url = "$BASE_URL$route" // Construire l'URL complète
+        val url = "$baseUrl$route"
 
         if (body != null) {
             Log.e("App", body)
         }
 
-        // Effectuer l'appel API en utilisant ApiService.makeApiCall
         return apiService.makeApiCall(
-            url = url,
-            method = method,
-            headers = mapOf("accept" to "application/json"),
-            body = body,
-            connectTimeout = 0,
-            readTimeout = 0,
-            writeTimeout = 0
+            ApiService.ApiRequest(
+                url = url,
+                method = method,
+                headers = mapOf("accept" to "application/json"),
+                body = body,
+                timeout = 0,
+            )
         )
     }
 
-    // Singleton
+    /**
+     * Singleton pattern for TempoApiService.
+     * Ensures that only one instance of this class exists.
+     */
     companion object {
         @Volatile
         private var INSTANCE: TempoApiService? = null
@@ -66,8 +67,6 @@ class TempoApiService private constructor() {
             method = "GET"
         )
 
-        Log.d("App", "Réponse API : ${response}")
-
         if (response?.isSuccessful == true) {
             Log.d("App", "Réponse API : ${response.body?.string()}")
             return@withContext true
@@ -77,5 +76,3 @@ class TempoApiService private constructor() {
         }
     }
 }
-
-
