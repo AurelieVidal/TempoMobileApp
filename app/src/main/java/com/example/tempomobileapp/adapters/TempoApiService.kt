@@ -8,7 +8,9 @@ import okhttp3.Response
 /**
  * ApiService is a singleton class that provides a Tempo API calling mechanism.
  */
-class TempoApiService private constructor() {
+class TempoApiService private constructor(
+    private val dispatcher: kotlinx.coroutines.CoroutineDispatcher = Dispatchers.IO
+) {
 
     private val baseUrl = "https://tempoapi-8iou.onrender.com"
     private var apiService: ApiService = ApiService.getInstance()
@@ -61,18 +63,20 @@ class TempoApiService private constructor() {
         }
     }
 
-    suspend fun checkHealth(): Boolean = withContext(Dispatchers.IO) {
+    suspend fun checkHealth(): Boolean = withContext(dispatcher) {
         val response = callApi(
             route = "/health",
             method = "GET"
         )
 
-        if (response?.isSuccessful == true) {
-            Log.d("App", "Réponse API : ${response.body?.string()}")
-            return@withContext true
+        val isSuccessful = response?.isSuccessful == true
+        if (isSuccessful) {
+            if (response != null) {
+                Log.d("App", "Réponse API : ${response.body?.string()}")
+            }
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
-            return@withContext false
         }
+        isSuccessful
     }
 }
