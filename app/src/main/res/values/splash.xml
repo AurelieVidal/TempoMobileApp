@@ -3,7 +3,7 @@
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_small</item>
         <item name="postSplashScreenTheme">@style/Theme.TempoMobileApp</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/text">
+
+    <target
+        android:name="letter1"
+        android:animation="@animator/scale_letter_1"/>
+
+    <target
+        android:name="letter2"
+        android:animation="@animator/scale_letter_2"/>
+
+    <target
+        android:name="letter3"
+        android:animation="@animator/scale_letter_3"/>
+
+    <target
+        android:name="letter4"
+        android:animation="@animator/scale_letter_4"/>
+
+    <target
+        android:name="letter5"
+        android:animation="@animator/scale_letter_5"/>
+
+</animated-vector>

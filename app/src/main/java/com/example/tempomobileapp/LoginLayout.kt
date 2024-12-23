@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.tempomobileapp.ui.components.InputFieldData
 import com.example.tempomobileapp.ui.components.MainButtonData
 import com.example.tempomobileapp.ui.components.decoration
 import com.example.tempomobileapp.ui.components.inputField
@@ -61,7 +62,7 @@ fun loginLayout(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(background) // Apply background color to the Box
+            .background(background)
     ) {
         topDecoration()
         loginContent(loginData)
@@ -74,7 +75,7 @@ private fun topDecoration() {
     decoration(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 30.dp), // Add top padding
+            .padding(top = 30.dp),
         colors = listOf(Main4, Main2, Main1, Main3, Main5)
     )
 }
@@ -131,10 +132,12 @@ private fun usernameInput(username: String, onUsernameChange: (String) -> Unit) 
         color = text
     )
     inputField(
-        value = username,
-        onValueChange = onUsernameChange,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        isPassword = false
+        InputFieldData(
+            value = username,
+            onValueChange = onUsernameChange,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            isPassword = false
+        )
     )
 }
 
@@ -149,10 +152,13 @@ private fun passwordInput(password: String, onPasswordChange: (String) -> Unit) 
         color = text
     )
     inputField(
-        value = password,
-        onValueChange = onPasswordChange,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        isPassword = true
+        InputFieldData(
+            value = password,
+            onValueChange = onPasswordChange,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            isPassword = true,
+            testTag = "passwordInputField"
+        )
     )
 }
 

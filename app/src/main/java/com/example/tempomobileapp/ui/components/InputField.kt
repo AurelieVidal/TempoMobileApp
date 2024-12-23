@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -28,10 +29,7 @@ import com.example.tempomobileapp.ui.theme.background
 
 @Composable
 fun inputField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    isPassword: Boolean = false
+    inputFieldData: InputFieldData
 ) {
     val borderColor = Main1
     val maxLength = 20
@@ -46,18 +44,18 @@ fun inputField(
             .padding(start = 2.dp, top = 2.dp, end = 2.dp, bottom = 8.dp)
     ) {
         TextField(
-            value = value,
+            value = inputFieldData.value,
             onValueChange = { newValue ->
                 if (newValue.length <= maxLength) {
-                    onValueChange(newValue)
+                    inputFieldData.onValueChange(newValue)
                 }
             },
-            visualTransformation = if (isPassword && !passwordVisible) {
+            visualTransformation = if (inputFieldData.isPassword && !passwordVisible) {
                 PasswordVisualTransformation()
             } else {
                 VisualTransformation.None
             },
-            keyboardOptions = keyboardOptions,
+            keyboardOptions = inputFieldData.keyboardOptions,
             colors = TextFieldDefaults.colors(
                 focusedTextColor = borderColor,
                 unfocusedTextColor = borderColor,
@@ -72,18 +70,19 @@ fun inputField(
                 disabledIndicatorColor = Color.Transparent
             ),
             trailingIcon = {
-                // Password visibility toggle icon
-                if (isPassword) {
+                if (inputFieldData.isPassword) {
                     passwordVisibilityToggleIcon(
                         showPassword = passwordVisible,
                         onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                        iconColor = borderColor
+                        iconColor = borderColor,
+                        iconTestTag = if (passwordVisible) "hidePasswordIcon" else "showPasswordIcon"
                     )
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .background(background, shape = RoundedCornerShape(15.dp))
+                .testTag(inputFieldData.testTag)
         )
     }
 }
@@ -92,14 +91,27 @@ fun inputField(
 fun passwordVisibilityToggleIcon(
     showPassword: Boolean,
     onTogglePasswordVisibility: () -> Unit,
-    iconColor: Color
+    iconColor: Color,
+    iconTestTag: String
 ) {
-    // Determine the icon based on password visibility
     val image = if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
     val contentDescription = if (showPassword) "Hide password icon" else "Show password icon"
 
-    // IconButton to toggle password visibility
-    IconButton(onClick = onTogglePasswordVisibility) {
+    IconButton(
+        onClick = onTogglePasswordVisibility,
+        modifier = Modifier.testTag(iconTestTag)
+    ) {
         Icon(imageVector = image, contentDescription = contentDescription, tint = iconColor)
     }
 }
+
+/**
+ * Properties of an input field
+ */
+data class InputFieldData(
+    val value: String,
+    val onValueChange: (String) -> Unit,
+    val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    val isPassword: Boolean = false,
+    val testTag: String = ""
+)

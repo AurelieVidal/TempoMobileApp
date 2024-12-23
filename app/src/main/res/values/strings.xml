@@ -2,5 +2,6 @@
     <string name="app_name">TempoMobileApp</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_error">ErrorActivity</string>
     <string name="title_activity_wait">WaitActivity</string>
 </resources>

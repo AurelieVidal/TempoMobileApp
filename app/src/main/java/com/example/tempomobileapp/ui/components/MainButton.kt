@@ -76,12 +76,7 @@ private fun getButtonModifier(isPressed: Boolean, color: Color, isSmall: Boolean
 
 @Composable
 private fun buttonText(text: String, isPressed: Boolean, isSmall: Boolean) {
-    val fontSize by animateFloatAsState(
-        targetValue = if (isPressed) {
-            if (isSmall) 11.5f else 16f
-        } else if (isSmall) 12f else 18f,
-        animationSpec = tween(durationMillis = 100)
-    )
+    val fontSize = if (isSmall) 12f else 18f
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = tween(durationMillis = 100)

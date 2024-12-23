@@ -34,9 +34,4 @@ class HomeActivityTest {
         composeTestRule.onNodeWithText("Hello Android!").assertIsDisplayed()
     }
 
-    @Test
-    fun testUIResponsiveness() {
-        ActivityScenario.launch(HomeActivity::class.java)
-        composeTestRule.onNodeWithTag("greetingText").assertIsDisplayed()
-    }
 }

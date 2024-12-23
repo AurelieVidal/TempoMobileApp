@@ -40,10 +40,7 @@ fun secondaryButton(
     val isPressed by interactionSource.collectIsPressedAsState()
 
     // Animate font size, scale, and bottom padding
-    val fontSize by animateFloatAsState(
-        targetValue = if (isPressed) 16f else 18f,
-        animationSpec = tween(durationMillis = 100)
-    )
+    val fontSize = 18f
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = tween(durationMillis = 100)
