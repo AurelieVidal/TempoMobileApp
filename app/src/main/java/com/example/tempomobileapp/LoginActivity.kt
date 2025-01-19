@@ -1,9 +1,13 @@
 package com.example.tempomobileapp
 
+import SignInLayout
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +36,18 @@ class LoginActivity : ComponentActivity() {
                     ) {
                         greeting(name = "Welcome to Home")
                     }
+                    composable(
+                        route = "signin"
+                    ) {
+                        val context = LocalContext.current
+
+                        // Utilisation d'un effet unique pour lancer l'activité
+                        LaunchedEffect(Unit) {
+                            context.startActivity(Intent(context, SignInActivity::class.java))
+                            (context as? ComponentActivity)?.finish() // Termine LoginActivity
+                        }
+                    }
+
                 }
             }
         }

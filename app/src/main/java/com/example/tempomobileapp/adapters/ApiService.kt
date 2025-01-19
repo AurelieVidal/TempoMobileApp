@@ -1,6 +1,7 @@
 package com.example.tempomobileapp.adapters
 
 import android.util.Log
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -79,10 +80,14 @@ class ApiService private constructor() {
             requestBuilder.addHeader(key, value)
         }
 
+        if (body != null) {
+            requestBuilder.addHeader("Content-Type", "application/json")
+        }
+
         when (method.uppercase()) {
             "GET" -> requestBuilder.get()
-            "POST" -> requestBuilder.post(body?.toRequestBody() ?: "".toRequestBody())
-            "PUT" -> requestBuilder.put(body?.toRequestBody() ?: "".toRequestBody())
+            "POST" -> requestBuilder.post(body?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody())
+            "PUT" -> requestBuilder.put(body?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody())
             "DELETE" -> requestBuilder.delete()
             else -> throw IllegalArgumentException("Unsupported HTTP method: $method")
         }
@@ -93,16 +98,20 @@ class ApiService private constructor() {
     private fun executeRequest(request: Request): Response? {
         return try {
             val response = client.newCall(request).execute()
+
+            // Ne pas lever d'exception, juste enregistrer une erreur dans les logs pour les réponses 4xx ou 5xx
             if (!response.isSuccessful) {
-                throw IOException("HTTP error ${response.code}: ${response.message}")
+                Log.e("ApiService", "HTTP error ${response.code}: ${response.message}")
             }
+
+            // Retourne la réponse même si elle est non réussie (4xx, 5xx)
             response
         } catch (e: IOException) {
+            // En cas d'erreur réseau, on log l'erreur et on renvoie null
             Log.e("ApiService", "Error during API call: ${e.message}")
             null
         }
     }
-
     /**
      * Singleton companion object for accessing the single instance of ApiService.
      */

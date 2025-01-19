@@ -134,4 +134,8 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     testImplementation("org.robolectric:robolectric:4.10.3")
+    implementation("com.googlecode.libphonenumber:libphonenumber:8.13.15")
+    implementation("com.github.MahboubehSeyedpour:jetpack-loading:1.1.0")
+    implementation("com.google.code.gson:gson:2.9.0")
+
 }

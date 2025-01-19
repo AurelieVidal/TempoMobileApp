@@ -116,7 +116,7 @@ private fun loginContent(
 private fun loginTitle() {
     Text(
         text = "Connexion",
-        fontSize = 40.sp,
+        fontSize = 32.sp,
         color = text
     )
 }
@@ -157,7 +157,8 @@ private fun passwordInput(password: String, onPasswordChange: (String) -> Unit) 
             onValueChange = onPasswordChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isPassword = true,
-            testTag = "passwordInputField"
+            testTag = "passwordInputField",
+            maxLength = 30,
         )
     )
 }
@@ -206,7 +207,7 @@ private fun loginButtons(navController: NavHostController) {
         secondaryButton(
             onClick = {
                 Log.d("Login", "Button clicked")
-                navController.navigate("home")
+                navController.navigate("signin")
             },
             text = "M'inscrire",
             borderColor = Main1
