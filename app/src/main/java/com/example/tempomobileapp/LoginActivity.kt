@@ -1,6 +1,5 @@
 package com.example.tempomobileapp
 
-import SignInLayout
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.tempomobileapp.signin.SignInActivity
 import com.example.tempomobileapp.ui.theme.tempoMobileAppTheme
 import loginLayout
 
@@ -41,13 +41,11 @@ class LoginActivity : ComponentActivity() {
                     ) {
                         val context = LocalContext.current
 
-                        // Utilisation d'un effet unique pour lancer l'activité
                         LaunchedEffect(Unit) {
                             context.startActivity(Intent(context, SignInActivity::class.java))
-                            (context as? ComponentActivity)?.finish() // Termine LoginActivity
+                            (context as? ComponentActivity)?.finish()
                         }
                     }
-
                 }
             }
         }

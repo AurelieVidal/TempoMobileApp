@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,19 +64,7 @@ fun inputField(
                 VisualTransformation.None
             },
             keyboardOptions = inputFieldData.keyboardOptions,
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = borderColor,
-                unfocusedTextColor = borderColor,
-                disabledTextColor = borderColor,
-                errorTextColor = borderColor,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                cursorColor = borderColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
+            colors = getTextFieldColors(borderColor),
             trailingIcon = {
                 if (inputFieldData.isPassword) {
                     passwordVisibilityToggleIcon(
@@ -116,6 +105,23 @@ fun passwordVisibilityToggleIcon(
     ) {
         Icon(imageVector = image, contentDescription = contentDescription, tint = iconColor)
     }
+}
+
+@Composable
+private fun getTextFieldColors(borderColor: Color): TextFieldColors {
+    return TextFieldDefaults.colors(
+        focusedTextColor = borderColor,
+        unfocusedTextColor = borderColor,
+        disabledTextColor = borderColor,
+        errorTextColor = borderColor,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
+        cursorColor = borderColor,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent
+    )
 }
 
 /**

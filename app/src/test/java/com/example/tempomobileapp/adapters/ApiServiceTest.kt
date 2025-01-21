@@ -8,6 +8,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.fail
 import org.junit.Before
@@ -200,7 +201,7 @@ class ApiServiceTest {
     }
 
     @Test
-    fun makeApiCall_should_return_null_on_http_500_error() {
+    fun makeApiCall_should_return_error_on_http_500_error() {
         val mockResponse = Response.Builder()
             .request(Request.Builder().url("https://example.com/test").build())
             .protocol(Protocol.HTTP_1_1)
@@ -218,7 +219,7 @@ class ApiServiceTest {
         val response =
             apiService.makeApiCall(ApiService.ApiRequest("https://example.com/test", "GET"))
 
-        assertNull(response)
+        assertNotNull(response)
     }
 
     @Test

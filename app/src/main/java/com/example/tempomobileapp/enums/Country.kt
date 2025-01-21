@@ -2,9 +2,13 @@ package com.example.tempomobileapp.enums
 
 import com.example.tempomobileapp.R
 
+/**
+ * data class Country represents a country's phone information.
+ * Used for component 'InputPhone', used in sign in page
+ */
 data class Country(
     val name: String,
-    val code: String, // ISO Code
+    val code: String,
     val phonePrefix: String,
     val flagResId: Int,
     val phoneFormat: String
@@ -21,7 +25,13 @@ val countries = listOf(
     Country("Andorre", "AD", "+376", R.drawable.flag_andorra, "+376 ## ## ##"),
     Country("Angola", "AO", "+244", R.drawable.flag_angola, "+244 #########"),
     Country("Anguilla", "AI", "+1 264", R.drawable.flag_anguilla, "+1 264 ### ####"),
-    Country("Antigua-et-Barbuda", "AG", "+1 268", R.drawable.flag_antigua_and_barbuda, "+1 268 ### ####"),
+    Country(
+        "Antigua-et-Barbuda",
+        "AG",
+        "+1 268",
+        R.drawable.flag_antigua_and_barbuda,
+        "+1 268 ### ####"
+    ),
     Country("Antarctique", "AQ", "+672", R.drawable.flag_antarctica, "+672 ## ####"),
     Country("Arabie saoudite", "SA", "+966", R.drawable.flag_saudi_arabia, "+966 ## #### ####"),
     Country("Argentine", "AR", "+54", R.drawable.flag_argentina, "+54 ### ### ####"),
@@ -43,7 +53,13 @@ val countries = listOf(
     Country("Biélorussie", "BY", "+375", R.drawable.flag_belarus, "+375 ## #######"),
     Country("Birmanie", "MM", "+95", R.drawable.flag_myanmar, "+95 #########"),
     Country("Bolivie", "BO", "+591", R.drawable.flag_bolivia, "591 # ### ####"),
-    Country("Bosnie-Herzégovine", "BA", "+387", R.drawable.flag_bosnia_and_herzegovina, "+387 ## ######"),
+    Country(
+        "Bosnie-Herzégovine",
+        "BA",
+        "+387",
+        R.drawable.flag_bosnia_and_herzegovina,
+        "+387 ## ######"
+    ),
     Country("Botswana", "BW", "+267", R.drawable.flag_botswana, "+267 ## ### ###"),
     Country("Île Bouvet", "BV", "+47", R.drawable.flag_norway, "+47 #### ####"),
     Country("Brésil", "BR", "+55", R.drawable.flag_brazil, "+55 ## ##### ####"),
@@ -56,14 +72,32 @@ val countries = listOf(
     Country("Canada", "CA", "+1", R.drawable.flag_canada, "+1 ### ### ####"),
     Country("Cap-Vert", "CV", "+238", R.drawable.flag_cape_verde, "+238 #######"),
     Country("Îles Caïmans", "KY", "+1 345", R.drawable.flag_cayman_islands, "+1 345 # ### # ###"),
-    Country("République centrafricaine", "CF", "+236", R.drawable.flag_central_african_republic, "236 ########"),
+    Country(
+        "République centrafricaine",
+        "CF",
+        "+236",
+        R.drawable.flag_central_african_republic,
+        "236 ########"
+    ),
     Country("Chili", "CL", "+56", R.drawable.flag_chile, "+56 #########"),
     Country("Chine", "CN", "+86", R.drawable.flag_china, "+86 ### #### ####"),
     Country("Chypre", "CY", "+357", R.drawable.flag_cyprus, "+357 ########"),
     Country("Colombie", "CO", "+57", R.drawable.flag_colombia, "+57 ### ### ####"),
     Country("Comores", "KM", "+269", R.drawable.flag_comoros, "+269 ### ####"),
-    Country("République démocratique du Congo", "CD", "+243", R.drawable.flag_democratic_republic_of_congo, "+243 ## ### ## ##"),
-    Country("République du Congo", "CG", "+242", R.drawable.flag_republic_of_the_congo, "+242 #########"),
+    Country(
+        "République démocratique du Congo",
+        "CD",
+        "+243",
+        R.drawable.flag_democratic_republic_of_congo,
+        "+243 ## ### ## ##"
+    ),
+    Country(
+        "République du Congo",
+        "CG",
+        "+242",
+        R.drawable.flag_republic_of_the_congo,
+        "+242 #########"
+    ),
     Country("Îles Cook", "CK", "+682", R.drawable.flag_cook_islands, "+682 ## ###"),
     Country("Corée du Nord", "KP", "+850", R.drawable.flag_north_korea, "+850 # ######"),
     Country("Corée du Sud", "KR", "+82", R.drawable.flag_south_korea, "+82 ## #### ####"),
@@ -74,12 +108,36 @@ val countries = listOf(
     Country("Curaçao", "CW", "+599", R.drawable.flag_curacao, "+599 ### ####"),
     Country("Danemark", "DK", "+45", R.drawable.flag_denmark, "+45 ## ## ## ##"),
     Country("Djibouti", "DJ", "+253", R.drawable.flag_djibouti, "+253 ## ######"),
-    Country("République dominicaine", "DO", "+1 809", R.drawable.flag_dominican_republic, "+1 809 ### ####"),
-    Country("République dominicaine", "DO", "+1 829", R.drawable.flag_dominican_republic, "+1 829 ### ####"),
-    Country("République dominicaine", "DO", "+1 849", R.drawable.flag_dominican_republic, "+1 849 ### ####"),
+    Country(
+        "République dominicaine",
+        "DO",
+        "+1 809",
+        R.drawable.flag_dominican_republic,
+        "+1 809 ### ####"
+    ),
+    Country(
+        "République dominicaine",
+        "DO",
+        "+1 829",
+        R.drawable.flag_dominican_republic,
+        "+1 829 ### ####"
+    ),
+    Country(
+        "République dominicaine",
+        "DO",
+        "+1 849",
+        R.drawable.flag_dominican_republic,
+        "+1 849 ### ####"
+    ),
     Country("Dominique", "DM", "+1 767", R.drawable.flag_dominica, "+1 767 ### ####"),
     Country("Égypte", "EG", "+20", R.drawable.flag_egypt, "+20 ## ### ####"),
-    Country("Émirats arabes unis", "AE", "+971", R.drawable.flag_united_arab_emirates, "+971 ## ### ####"),
+    Country(
+        "Émirats arabes unis",
+        "AE",
+        "+971",
+        R.drawable.flag_united_arab_emirates,
+        "+971 ## ### ####"
+    ),
     Country("Équateur", "EC", "+593", R.drawable.flag_ecuador, "+593 ## ### ####"),
     Country("Érythrée", "ER", "+291", R.drawable.flag_eritrea, "+291 # ######"),
     Country("Espagne", "ES", "+34", R.drawable.flag_spain, "+34 ### ## ## ##"),
@@ -93,7 +151,13 @@ val countries = listOf(
     Country("Gabon", "GA", "+241", R.drawable.flag_gabon, "+241 # ## ## ## ##"),
     Country("Gambie", "GM", "+220", R.drawable.flag_gambia, "+220 #######"),
     Country("Géorgie", "GE", "+995", R.drawable.flag_georgia, "+995 ### ### ###"),
-    Country("Géorgie du Sud-et-les îles Sandwich du Sud", "GS", "+500", R.drawable.flag_sandwich_islands, "+500 #####"),
+    Country(
+        "Géorgie du Sud-et-les îles Sandwich du Sud",
+        "GS",
+        "+500",
+        R.drawable.flag_sandwich_islands,
+        "+500 #####"
+    ),
     Country("Ghana", "GH", "+233", R.drawable.flag_ghana, "+233 #########"),
     Country("Gibraltar", "GI", "+350", R.drawable.flag_gibraltar, "+350 ########"),
     Country("Grèce", "GR", "+30", R.drawable.flag_greece, "+30 #### ####"),
@@ -104,7 +168,13 @@ val countries = listOf(
     Country("Guatemala", "GT", "+502", R.drawable.flag_guatemala, "+502 ### ### ####"),
     Country("Guernesey", "GG", "+44", R.drawable.flag_guernsey, "+44 #### ######"),
     Country("Guinée", "GN", "+224", R.drawable.flag_guinea, "+244 #########"),
-    Country("Guinée équatoriale", "GQ", "+240", R.drawable.flag_equatorial_guinea, "+240 ## ######"),
+    Country(
+        "Guinée équatoriale",
+        "GQ",
+        "+240",
+        R.drawable.flag_equatorial_guinea,
+        "+240 ## ######"
+    ),
     Country("Guinée-Bissau", "GW", "+245", R.drawable.flag_guinea_bissau, "+245 ########"),
     Country("Guyana", "GY", "+592", R.drawable.flag_guyana, "+592 #######"),
     Country("Guyane", "GF", "+594", R.drawable.flag_france, "+594 ### ## ## ##"),
@@ -142,7 +212,13 @@ val countries = listOf(
     Country("Lituanie", "LT", "+370", R.drawable.flag_lithuania, "+370 #### ####"),
     Country("Luxembourg", "LU", "+352", R.drawable.flag_luxembourg, "+352 ### ### ###"),
     Country("Macao", "MO", "+853", R.drawable.flag_macao, "+853 # ### # ###"),
-    Country("Macédoine du Nord", "MK", "+389", R.drawable.flag_republic_of_macedonia, "+389 ########"),
+    Country(
+        "Macédoine du Nord",
+        "MK",
+        "+389",
+        R.drawable.flag_republic_of_macedonia,
+        "+389 ########"
+    ),
     Country("Madagascar", "MG", "+261", R.drawable.flag_madagascar, "+261 ## ########"),
     Country("Malaisie", "MY", "+60", R.drawable.flag_malasya, "+60##########"),
     Country("Malawi", "MW", "+265", R.drawable.flag_malawi, "+265#########"),
@@ -150,7 +226,13 @@ val countries = listOf(
     Country("Mali", "ML", "+223", R.drawable.flag_mali, "+223 ########"),
     Country("Malouines", "FK", "+500", R.drawable.flag_falkland_islands, "+500 #####"),
     Country("Malte", "MT", "+356", R.drawable.flag_malta, "+356 ########"),
-    Country("Îles Mariannes du Nord", "MP", "+1670", R.drawable.flag_northern_marianas_islands, "+1 670 ### ####"),
+    Country(
+        "Îles Mariannes du Nord",
+        "MP",
+        "+1670",
+        R.drawable.flag_northern_marianas_islands,
+        "+1 670 ### ####"
+    ),
     Country("Maroc", "MA", "+212", R.drawable.flag_morocco, "+212 ### ### ###"),
     Country("Îles Marshall", "MH", "+692", R.drawable.flag_marshall_island, "+692 ### ####"),
     Country("Martinique", "MQ", "+596", R.drawable.flag_france, "+596 ### ## ####"),
@@ -158,7 +240,13 @@ val countries = listOf(
     Country("Mauritanie", "MR", "+222", R.drawable.flag_mauritania, "+222 ########"),
     Country("Mayotte", "YT", "+262", R.drawable.flag_france, "+262########"),
     Country("Mexique", "MX", "+52", R.drawable.flag_mexico, "+52 ## #### ####"),
-    Country("États fédérés de Micronésie", "FM", "+691", R.drawable.flag_micronesia, "+691 ### ####"),
+    Country(
+        "États fédérés de Micronésie",
+        "FM",
+        "+691",
+        R.drawable.flag_micronesia,
+        "+691 ### ####"
+    ),
     Country("Moldavie", "MD", "+373", R.drawable.flag_moldova, "+373 ## ### ####"),
     Country("Monaco", "MC", "+377", R.drawable.flag_monaco, "+377 ## ## ## ##"),
     Country("Mongolie", "MN", "+976", R.drawable.flag_mongolia, "+976 #### ####"),
@@ -183,10 +271,22 @@ val countries = listOf(
     Country("Palaos", "PW", "+680", R.drawable.flag_palau, "+680 ### ####"),
     Country("Palestine", "PS", "+970", R.drawable.flag_palestine, "+970##########"),
     Country("Panama", "PA", "+507", R.drawable.flag_panama, "+507 ### ### ####"),
-    Country("Papouasie-Nouvelle-Guinée", "PG", "+675", R.drawable.flag_papua_new_guinea, "+675 ### ####"),
+    Country(
+        "Papouasie-Nouvelle-Guinée",
+        "PG",
+        "+675",
+        R.drawable.flag_papua_new_guinea,
+        "+675 ### ####"
+    ),
     Country("Paraguay", "PY", "+595", R.drawable.flag_paraguay, "+595 ### ### ###"),
     Country("Pays-Bas", "NL", "+31", R.drawable.flag_netherlands, "+31 ### ### ####"),
-    Country("Pays-Bas caribéens", "BQ", "+599", R.drawable.flag_caribean_netherlands, "+599 ### ####"),
+    Country(
+        "Pays-Bas caribéens",
+        "BQ",
+        "+599",
+        R.drawable.flag_caribean_netherlands,
+        "+599 ### ####"
+    ),
     Country("Pérou", "PE", "+51", R.drawable.flag_peru, "+51 # ### ####"),
     Country("Philippines", "PH", "+63", R.drawable.flag_philippines, "+63 ### ### ####"),
     Country("Îles Pitcairn", "PN", "+64", R.drawable.flag_pitcairn_islands, "+64 ########"),
@@ -202,18 +302,42 @@ val countries = listOf(
     Country("Russie", "RU", "+7", R.drawable.flag_russia, "+7 ### ### ####"),
     Country("Rwanda", "RW", "+250", R.drawable.flag_rwanda, "+250 ### ### ###"),
     Country("Saint-Barthélemy", "BL", "+590", R.drawable.flag_france, "+590 ########"),
-    Country("Saint-Christophe-et-Niévès", "KN", "+1 869", R.drawable.flag_saint_kitts_and_nevis, "+1 869 ### ####"),
-    Country("Sainte-Hélène, Ascension et Tristan da Cunha", "SH", "+290", R.drawable.flag_ascension_island, "+290 ######"),
+    Country(
+        "Saint-Christophe-et-Niévès",
+        "KN",
+        "+1 869",
+        R.drawable.flag_saint_kitts_and_nevis,
+        "+1 869 ### ####"
+    ),
+    Country(
+        "Sainte-Hélène, Ascension et Tristan da Cunha",
+        "SH",
+        "+290",
+        R.drawable.flag_ascension_island,
+        "+290 ######"
+    ),
     Country("Sainte-Lucie", "LC", "+ 1758", R.drawable.flag_st_lucia, "+1 758 ### ####"),
     Country("Saint-Marin", "SM", "+378", R.drawable.flag_san_marino, "+378 #### ####"),
     Country("Saint-Martin", "MF", "+590", R.drawable.flag_france, "+690 ## ## ##"),
     Country("Saint-Pierre-et-Miquelon", "PM", "+508", R.drawable.flag_france, "+508######"),
-    Country("Saint-Vincent-et-les-Grenadines", "VC", "+1 784", R.drawable.flag_st_vincent_and_the_grenadines, "+1 784 ### ####"),
+    Country(
+        "Saint-Vincent-et-les-Grenadines",
+        "VC",
+        "+1 784",
+        R.drawable.flag_st_vincent_and_the_grenadines,
+        "+1 784 ### ####"
+    ),
     Country("Îles Salomon", "SB", "+677", R.drawable.flag_solomon_islands, "+677 ### ####"),
     Country("Salvador", "SV", "+503", R.drawable.flag_el_salvador, "+503 #### ####"),
     Country("Samoa", "WS", "+685", R.drawable.flag_samoa, "+685 ### ####"),
     Country("Samoa américaines", "AS", "+1 684", R.drawable.flag_american_samoa, "+1 684 ### ####"),
-    Country("Sao Tomé-et-Principe", "ST", "+239", R.drawable.flag_sao_tome_and_prince, "+239 ### ####"),
+    Country(
+        "Sao Tomé-et-Principe",
+        "ST",
+        "+239",
+        R.drawable.flag_sao_tome_and_prince,
+        "+239 ### ####"
+    ),
     Country("Sénégal", "SN", "+221", R.drawable.flag_senegal, "+221 ## ### ####"),
     Country("Serbie", "RS", "+381", R.drawable.flag_serbia, "+381 ### ### ###"),
     Country("Seychelles", "SC", "+248", R.drawable.flag_seychelles, "+248 ### ####"),
@@ -237,8 +361,20 @@ val countries = listOf(
     Country("Taïwan", "TW", "+886", R.drawable.flag_taiwan, "+886 #### ####"),
     Country("Tchad", "TD", "+235", R.drawable.flag_chad, "+235 ## ## ## ##"),
     Country("République tchèque", "CZ", "+420", R.drawable.flag_czech_republic, "+420 ### ### ###"),
-    Country("Terres australes et antarctiques françaises", "TF", "+262", R.drawable.flag_french_southern_territories, "+262 #### ####"),
-    Country("Territoire britannique de l'océan Indien", "IO", "+246", R.drawable.flag_british_indian_ocean_territory, "+246 #######"),
+    Country(
+        "Terres australes et antarctiques françaises",
+        "TF",
+        "+262",
+        R.drawable.flag_french_southern_territories,
+        "+262 #### ####"
+    ),
+    Country(
+        "Territoire britannique de l'océan Indien",
+        "IO",
+        "+246",
+        R.drawable.flag_british_indian_ocean_territory,
+        "+246 #######"
+    ),
     Country("Île Christmas", "CX", "+61", R.drawable.flag_christmas_island, "+61 #########"),
     Country("Îles Cocos", "CC", "+61", R.drawable.flag_cocos_island, "+61 # #### ####"),
     Country("Îles Heard-et-MacDonald", "HM", "+672", R.drawable.flag_australia, "+672 ### ###"),
@@ -247,10 +383,22 @@ val countries = listOf(
     Country("Togo", "TG", "+228", R.drawable.flag_togo, "+228 ## ## ## ##"),
     Country("Tokelau", "TK", "+690", R.drawable.flag_tokelau, "+690 ########"),
     Country("Tonga", "TO", "+676", R.drawable.flag_tonga, "+676 ### ####"),
-    Country("Trinité-et-Tobago", "TT", "+1 868", R.drawable.flag_trinidad_and_tobago, "+1 868 ### ####"),
+    Country(
+        "Trinité-et-Tobago",
+        "TT",
+        "+1 868",
+        R.drawable.flag_trinidad_and_tobago,
+        "+1 868 ### ####"
+    ),
     Country("Tunisie", "TN", "+216", R.drawable.flag_tunisia, "+216 ## ### ###"),
     Country("Turkménistan", "TM", "+993", R.drawable.flag_turkmenistan, "+993 ## ######"),
-    Country("Îles Turques-et-Caïques", "TC", "+1 649", R.drawable.flag_turks_and_caicos, "+1 649 ### ####"),
+    Country(
+        "Îles Turques-et-Caïques",
+        "TC",
+        "+1 649",
+        R.drawable.flag_turks_and_caicos,
+        "+1 649 ### ####"
+    ),
     Country("Turquie", "TR", "+90", R.drawable.flag_turkey, "+90 ### ### ####"),
     Country("Tuvalu", "TV", "+688", R.drawable.flag_tuvalu, "+688 #### ####"),
     Country("Ukraine", "UA", "+380", R.drawable.flag_ukraine, "+380 ## ### ####"),
@@ -258,15 +406,45 @@ val countries = listOf(
     Country("Vanuatu", "VU", "+678", R.drawable.flag_vanuatu, "+678 ## ### ###"),
     Country("Vatican", "VA", "+39", R.drawable.flag_vatican_city, "+39 06 698 #####"),
     Country("Venezuela", "VE", "+58", R.drawable.flag_venezuela, "+58 ### #######"),
-    Country("Îles Vierges des États-Unis", "VI", "+1 340", R.drawable.flag_us_virgin_islands, "+1 340 ### ####"),
-    Country("Îles Vierges britanniques", "VG", "+1 284", R.drawable.flag_british_virgin_islands, "+1 284 ### ####"),
+    Country(
+        "Îles Vierges des États-Unis",
+        "VI",
+        "+1 340",
+        R.drawable.flag_us_virgin_islands,
+        "+1 340 ### ####"
+    ),
+    Country(
+        "Îles Vierges britanniques",
+        "VG",
+        "+1 284",
+        R.drawable.flag_british_virgin_islands,
+        "+1 284 ### ####"
+    ),
     Country("Viêt Nam", "VN", "+84", R.drawable.flag_vietnam, "+84 ### ### ###"),
     Country("Wallis-et-Futuna", "WF", "+681", R.drawable.flag_wallis_and_fortune, "+681 ######"),
     Country("Yémen", "YE", "+967", R.drawable.flag_yemen, "+967 # #######"),
     Country("Zambie", "ZM", "+260", R.drawable.flag_zambia, "+260 ## ### ####"),
     Country("Zimbabwe", "ZW", "+263", R.drawable.flag_zimbabwe, "+263 ## #######"),
-    Country("Systèmes mobiles mondiaux par satellite GMSS", "", "+881", R.drawable.flag_white, "+881 # ### ####"),
-    Country("Systèmes mobiles mondiaux par satellite GMSS", "", "+882", R.drawable.flag_white, "+882 ## ### ####"),
+    Country(
+        "Systèmes mobiles mondiaux par satellite GMSS",
+        "",
+        "+881",
+        R.drawable.flag_white,
+        "+881 # ### ####"
+    ),
+    Country(
+        "Systèmes mobiles mondiaux par satellite GMSS",
+        "",
+        "+882",
+        R.drawable.flag_white,
+        "+882 ## ### ####"
+    ),
     Country("Numéros internationaux", "", "+883", R.drawable.flag_white, "+883 ## ### ####"),
-    Country("Numéro gratuit et universel de libre appel international", "", "+6039", R.drawable.flag_white, "+6039 #### ####"),
+    Country(
+        "Numéro gratuit et universel de libre appel international",
+        "",
+        "+6039",
+        R.drawable.flag_white,
+        "+6039 #### ####"
+    ),
 )

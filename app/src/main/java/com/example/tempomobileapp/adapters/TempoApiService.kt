@@ -1,15 +1,16 @@
 package com.example.tempomobileapp.adapters
 
 import android.util.Log
+import com.example.tempomobileapp.exceptions.ApiException
 import com.example.tempomobileapp.models.SecurityQuestion
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import okhttp3.Response
+import java.io.IOException
 
 /**
  * ApiService is a singleton class that provides a Tempo API calling mechanism.
@@ -74,7 +75,6 @@ class TempoApiService private constructor(
         val isSuccessful = response?.isSuccessful == true
         if (isSuccessful) {
             Log.d("App", "Réponse API : ${response?.body?.string()}")
-
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
         }
@@ -82,43 +82,32 @@ class TempoApiService private constructor(
     }
 
     suspend fun getSecurityQuestions(): List<SecurityQuestion> = withContext(dispatcher) {
-        Log.d("App", "Récupération des questions de sécurité")
-
         val response = callApi(
             route = "/security/question/random/3",
             method = "GET"
         )
 
-        // Vérifie si la réponse est réussie
         if (response?.isSuccessful == true && response.body != null) {
             val jsonString = response.body?.string()
-
-            //Log.d("App", "Réponse API : $jsonString")
-            val questions = parseQuestions(jsonString ?: "")
-            Log.d("App", "Questions récupérées : $questions")
-            // Parse la réponse JSON
             return@withContext parseQuestions(jsonString ?: "")
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
+            throw ApiException("Unable to get security questions")
         }
 
-        // Renvoie une liste vide en cas d'erreur
         return@withContext emptyList()
     }
 
     fun parseQuestions(jsonString: String): List<SecurityQuestion> {
         val gson = Gson()
-        val jsonObject = gson.fromJson(jsonString, JsonObject::class.java) // Parse l'objet JSON
+        val jsonObject = gson.fromJson(jsonString, JsonObject::class.java)
 
-        // Vérifie si la clé "questions" existe
         if (!jsonObject.has("questions")) {
             throw JsonSyntaxException("Unexpected response format")
         }
 
-        // Récupère la liste sous forme de JsonArray
         val questionsJsonArray = jsonObject.getAsJsonArray("questions")
 
-        // Convertit le JsonArray en List<SecurityQuestion>
         val type = object : TypeToken<List<SecurityQuestion>>() {}.type
         return gson.fromJson(questionsJsonArray, type)
     }
@@ -132,53 +121,44 @@ class TempoApiService private constructor(
 
             if (response == null) {
                 Log.e("App", "Réponse API null")
-                throw IllegalStateException("Erreur inattendue de l'API : Réponse null")
+                throw ApiException("Erreur inattendue de l'API : Réponse null")
             }
-
-            Log.d("App", "Réponse API : ${response.body?.string()}")
 
             return@withContext when (response.code) {
                 404 -> true
                 200 -> false
                 else -> {
                     Log.e("App", "Code de réponse inattendu : ${response.code}")
-                    throw IllegalStateException("Erreur inattendue de l'API : Code ${response.code}")
+                    throw ApiException("Erreur inattendue de l'API : Code ${response.code}")
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             Log.e("App", "Erreur lors de l'appel API : ${e.message}")
             throw IllegalStateException("Erreur inattendue de l'API : ${e.message}", e)
         }
     }
 
-    suspend fun createUser(username: String, password: String, email: String, phoneNumber: String, securityQuestions: List<SecurityQuestion>, deviceId: String) = withContext(dispatcher) {
-
-
-        var password = password.trimEnd()
-        var email = email.trimEnd()
-        var phone = phoneNumber.replace(" ", "")
-        val questions = securityQuestions.map { question ->
+    suspend fun createUser(userCreate: UserCreate) = withContext(dispatcher) {
+        val password = userCreate.password.trimEnd()
+        val email = userCreate.email.trimEnd()
+        val phone = userCreate.phoneNumber.replace(" ", "")
+        val questions = userCreate.securityQuestions.map { question ->
             question.copy(response = question.response.trimEnd())
         }
 
-
-
         val payload = mapOf(
-            "username" to username,
+            "username" to userCreate.username,
             "password" to password,
             "email" to email,
             "phone" to phone,
-            "device" to deviceId,
+            "device" to userCreate.deviceId,
             "questions" to questions.map { question ->
                 mapOf(
                     "questionId" to question.id,
                     "response" to question.response
                 )
-            } // Exemple si `SecurityQuestion` a une méthode `toMap()`
+            }
         )
-
-        Log.d("App", "Payload : $payload")
-
 
         val response = callApi(
             route = "/users",
@@ -189,13 +169,20 @@ class TempoApiService private constructor(
         val isSuccessful = response?.isSuccessful == true
         if (isSuccessful) {
             Log.d("App", "Réponse API : ${response?.body?.string()}")
-
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
         }
     }
-
-
 }
 
-
+/**
+ * Data class that contains all necessary information to create a user
+ */
+data class UserCreate(
+    val username: String,
+    val password: String,
+    val email: String,
+    val phoneNumber: String,
+    val securityQuestions: List<SecurityQuestion>,
+    val deviceId: String,
+)

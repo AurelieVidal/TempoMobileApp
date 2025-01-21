@@ -1,10 +1,11 @@
 package com.example.tempomobileapp.adapters
 
 import android.util.Log
+import com.example.tempomobileapp.exceptions.ApiException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.security.MessageDigest
 import okhttp3.Response
+import java.security.MessageDigest
 
 /**
  * ApiService is a singleton class that provides a Tempo API calling mechanism.
@@ -21,8 +22,8 @@ class HIPBApiService private constructor(
     }
 
     /**
-     * Calls a specific route from the Tempo API.
-     * @param route The API route (e.g., "/health").
+     * Calls a specific route from the HIPB API.
+     * @param route The API route.
      * @param method The HTTP method (GET, POST, PUT, DELETE).
      * @param body The request body for POST/PUT methods.
      * @return A Response object or null in case of an error.
@@ -61,17 +62,16 @@ class HIPBApiService private constructor(
             }
         }
     }
-    //range/
-    suspend fun checkPassword(password:String): Boolean = withContext(dispatcher) {
 
+    suspend fun checkPassword(password: String): Boolean = withContext(dispatcher) {
         val digest = MessageDigest.getInstance("SHA-1")
         val hashBytes = digest.digest(password.toByteArray())
         val hashed = hashBytes.joinToString("") { "%02x".format(it) }
 
-        val hashBeginning = hashed.substring(0,5)
+        val hashBeginning = hashed.substring(0, 5)
         val hashEnd = hashed.substring(5).uppercase()
 
-        Log.d("App","hashed : $hashed")
+        Log.d("App", "hashed : $hashed")
 
         val response = callApi(
             route = "/range/$hashBeginning",
@@ -82,27 +82,13 @@ class HIPBApiService private constructor(
 
         val isSuccessful = response?.isSuccessful == true
         if (isSuccessful) {
-
-
             val responseBody = response?.body?.string()
-
-            Log.d("App", "Réponse API : ${responseBody}")
             val hashes = mutableListOf<String>()
 
-            Log.d("App", "OKK")
-
-            // Utiliser une expression régulière pour extraire les hashs
-
             responseBody?.let {
-
-                Log.d("App", "lett")
-
-                val regex = Regex("([A-F0-9]{35})(?=:)") //incorrect
+                val regex = Regex("([A-F0-9]{35})(?=:)")
                 val matchResults = regex.findAll(it)
 
-                Log.d("App", "match : $matchResults")
-
-                // Ajouter chaque match trouvé à la liste
                 matchResults.forEach { match ->
                     hashes.add(match.value)
                 }
@@ -111,16 +97,10 @@ class HIPBApiService private constructor(
             if (hashes.contains(hashEnd)) {
                 weakPassword = true
             }
-
-            // Afficher la liste des hashs
-            Log.d("App", "Liste des hashs : $hashes")
-            Log.d("App", "pâwworword weak : $weakPassword")
-
-
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
+            throw ApiException("Erreur API : ${response?.code}")
         }
-        //isSuccessful
 
         weakPassword
     }
