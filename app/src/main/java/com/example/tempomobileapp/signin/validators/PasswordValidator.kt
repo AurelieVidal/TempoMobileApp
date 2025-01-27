@@ -1,7 +1,7 @@
 package com.example.tempomobileapp.signin.validators
 
 import android.util.Log
-import com.example.tempomobileapp.adapters.HIPBApiService
+import com.example.tempomobileapp.adapters.HIBPApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -130,8 +130,10 @@ private fun extractPersonalInfo(username: String, email: String): List<String> {
 }
 
 private suspend fun validatePasswordStrength(inputPassword: String, onError: (String?) -> Unit): Boolean {
+    Log.d("App", "Validating password strength")
+
     val isPasswordWeak = withContext(Dispatchers.IO) {
-        HIPBApiService.getInstance().checkPassword(inputPassword)
+        HIBPApiService.getInstance().checkPassword(inputPassword)
     }
     if (isPasswordWeak) {
         onError("Le mot de passe est trop faible")

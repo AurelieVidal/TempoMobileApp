@@ -1,5 +1,7 @@
 package com.example.tempomobileapp.adapters
 
+import io.mockk.every
+import io.mockk.mockk
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -23,8 +25,8 @@ class ApiServiceTest {
 
     @Before
     fun setup() {
-        mockClient = Mockito.mock(OkHttpClient::class.java)
-        mockBuilder = Mockito.mock(OkHttpClient.Builder::class.java)
+        mockClient = mockk(relaxed = true) // Création d'un mock relaxé pour éviter les exceptions sur les méthodes non stubées.
+        mockBuilder = mockk(relaxed = true)
 
         val apiService = ApiService.getInstance()
         apiService.setClient(mockClient)
@@ -40,9 +42,9 @@ class ApiServiceTest {
             .body("Mock response body".toResponseBody("text/plain".toMediaTypeOrNull()))
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
         val apiService = ApiService.getInstance()
         val response =
@@ -54,13 +56,14 @@ class ApiServiceTest {
 
     @Test
     fun makeApiCall_should_return_success_response_with_custom_timeouts() {
-        val mockBuilder = Mockito.mock(OkHttpClient.Builder::class.java)
-        Mockito.`when`(mockClient.newBuilder()).thenReturn(mockBuilder)
+        val mockBuilder = mockk<OkHttpClient.Builder>(relaxed = true)
 
-        Mockito.`when`(mockBuilder.connectTimeout(any(), any())).thenReturn(mockBuilder)
-        Mockito.`when`(mockBuilder.readTimeout(any(), any())).thenReturn(mockBuilder)
-        Mockito.`when`(mockBuilder.writeTimeout(any(), any())).thenReturn(mockBuilder)
-        Mockito.`when`(mockBuilder.build()).thenReturn(mockClient)
+        every { mockClient.newBuilder() } returns mockBuilder
+        every { mockBuilder.connectTimeout(any(), any()) } returns mockBuilder
+        every { mockBuilder.readTimeout(any(), any()) } returns mockBuilder
+        every { mockBuilder.writeTimeout(any(), any()) } returns mockBuilder
+        every { mockBuilder.build() } returns mockClient
+
 
         val mockResponse = Response.Builder()
             .request(Request.Builder().url("https://example.com/test").build())
@@ -70,10 +73,10 @@ class ApiServiceTest {
             .body("Mock response body".toResponseBody("text/plain".toMediaTypeOrNull()))
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
 
         val apiService = ApiService.getInstance()
         val response = apiService.makeApiCall(
@@ -98,9 +101,9 @@ class ApiServiceTest {
             .body("Mock response body".toResponseBody("text/plain".toMediaTypeOrNull()))
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
         val apiService = ApiService.getInstance()
         val response = apiService.makeApiCall(ApiService.ApiRequest("https://example.com/test"))
@@ -119,9 +122,9 @@ class ApiServiceTest {
             .body("Mock POST response body".toResponseBody("text/plain".toMediaTypeOrNull()))
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
         val headers =
             mapOf("Authorization" to "Bearer token123", "Content-Type" to "application/json")
@@ -151,9 +154,9 @@ class ApiServiceTest {
             .body("Mock PUT response body".toResponseBody("text/plain".toMediaTypeOrNull()))
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
         val headers =
             mapOf("Authorization" to "Bearer token123", "Content-Type" to "application/json")
@@ -182,9 +185,9 @@ class ApiServiceTest {
             .body(null)
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
         val headers = mapOf("Authorization" to "Bearer token123")
         val apiService = ApiService.getInstance()
@@ -210,9 +213,9 @@ class ApiServiceTest {
             .body(null)
             .build()
 
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenReturn(mockResponse)
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } returns mockResponse
+        every { mockClient.newCall(any()) } returns mockCall
 
         val apiService = ApiService.getInstance()
         apiService.setClient(mockClient)
@@ -224,9 +227,9 @@ class ApiServiceTest {
 
     @Test
     fun makeApiCall_should_return_null_on_io_exception() {
-        val mockCall = Mockito.mock(Call::class.java)
-        Mockito.`when`(mockCall.execute()).thenThrow(IOException("Network error"))
-        Mockito.`when`(mockClient.newCall(any())).thenReturn(mockCall)
+        val mockCall = mockk<Call>()
+        every { mockCall.execute() } throws IOException("Network error")
+        every { mockClient.newCall(any()) } returns mockCall
 
         val apiService = ApiService.getInstance()
         val response = apiService.makeApiCall(ApiService.ApiRequest("https://example.com/test"))

@@ -39,8 +39,7 @@ internal var securityAnswers = mutableStateListOf<MutableState<String>>()
 internal var securityErrors = mutableStateListOf<MutableState<String?>>()
 
 // Global check
-internal var userError by mutableStateOf<Boolean?>(null)
-internal var openDialog by mutableStateOf(false)
+internal var userError = mutableStateOf(false)
 
 internal fun resetSignInStates() {
     usernameError.value = null
@@ -62,8 +61,7 @@ internal fun resetSignInStates() {
     securityAnswers.clear()
     securityErrors.clear()
 
-    userError = null
-    openDialog = false
+    userError.value = false
     isLoading.value = false
     debounceJob = null
 }

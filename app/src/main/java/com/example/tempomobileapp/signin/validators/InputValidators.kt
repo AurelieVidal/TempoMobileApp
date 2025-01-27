@@ -55,10 +55,15 @@ private fun isPhoneNumberValid(
     selectedCountry: Country,
     onError: (String?) -> Unit
 ): Boolean {
+    Log.d("App", "phoneNumber : $phoneNumber")
     val isValid = when {
         phoneNumber.isBlank() -> {
             onError("Le numéro de téléphone est obligatoire.")
             false
+        }
+        selectedCountry.phoneFormat == "" -> {
+            onError(null)
+            true
         }
         !selectedCountry.phoneFormat
             .replace("#", "\\d")
@@ -101,9 +106,14 @@ internal suspend fun validateUserInputs(securityQuestions: List<SecurityQuestion
         isValid = false
     }
 
+    Log.d("App", "passwd check error : $passwordCheckError")
+
+    Log.d("App", "passwd check : $passwordError")
+
     Log.d("App", "security questions : $securityQuestions")
     Log.d("App", "security answers : $securityAnswers")
     securityQuestions.forEachIndexed { index, _ ->
+        Log.d("App", "security question : ${securityQuestions[index].question}")
         if (securityAnswers[index].value.isBlank()) {
             securityErrors[index].value = "Veuillez répondre à la question."
             isValid = false

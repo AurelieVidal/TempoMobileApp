@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -84,13 +86,20 @@ fun inputPhone(
             TextField(
                 value = phoneNumber,
                 onValueChange = { newValue ->
-                    val formattedNumber =
-                        formatPhoneNumber(newValue.text, phoneData.selectedCountry.value)
-                    phoneNumber = TextFieldValue(
-                        formattedNumber,
-                        selection = TextRange(formattedNumber.length)
-                    )
-                    phoneData.onValueChange(formattedNumber)
+                    Log.d("InputPhone", "SELECTD COUNTRY: ${phoneData.selectedCountry.value.phoneFormat}")
+                    if (phoneData.selectedCountry.value.phoneFormat == "") {
+                        phoneNumber = newValue
+                        phoneData.phoneNumber = newValue.text
+                        phoneData.onValueChange(newValue.text)
+                    } else {
+                        val formattedNumber =
+                            formatPhoneNumber(newValue.text, phoneData.selectedCountry.value)
+                        phoneNumber = TextFieldValue(
+                            formattedNumber,
+                            selection = TextRange(formattedNumber.length)
+                        )
+                        phoneData.onValueChange(formattedNumber)
+                    }
                 },
                 leadingIcon = {
                     leadIcon(borderColor, phoneData)
@@ -101,6 +110,7 @@ fun inputPhone(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(background, shape = RoundedCornerShape(15.dp))
+                    .testTag(phoneData.testTag)
             )
 
             if (isPopupOpen) {
@@ -186,6 +196,7 @@ fun flagDialog(
                 .fillMaxSize()
                 .background(background)
                 .padding(16.dp)
+                .testTag("flagDialog")
         ) {
             Box(
                 Modifier
@@ -226,7 +237,8 @@ private fun dialogContent(onCountrySelected: (Country) -> Unit) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 isPassword = false,
                 placeholder = "Rechercher un pays",
-                trailingIcon = Icons.Filled.Search
+                trailingIcon = Icons.Filled.Search,
+                testTag = "searchField"
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -305,6 +317,7 @@ private fun leadIcon(borderColor: Color, phoneData: InputPhoneData) {
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 8.dp, vertical = 4.dp)
+            .testTag("flagClickable"),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -332,5 +345,6 @@ data class InputPhoneData(
     var phoneNumber: String,
     var selectedCountry: MutableState<Country>,
     val keyboardOptions: KeyboardOptions,
-    val borderColor: Color = Main1
+    val borderColor: Color = Main1,
+    val testTag: String = ""
 )

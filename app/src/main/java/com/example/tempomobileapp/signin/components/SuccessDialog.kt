@@ -1,6 +1,7 @@
 package com.example.tempomobileapp.signin.components
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,7 +38,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.tempomobileapp.R
-import com.example.tempomobileapp.signin.openDialog
+import com.example.tempomobileapp.signin.resetSignInStates
 import com.example.tempomobileapp.ui.components.MainButtonData
 import com.example.tempomobileapp.ui.components.mainButton
 import com.example.tempomobileapp.ui.theme.Main5
@@ -53,7 +55,6 @@ import com.gandiva.neumorphic.shape.RoundedCorner
 internal fun successDialog(navController: NavController) {
     Dialog(
         onDismissRequest = {
-            openDialog = false
             navController.navigate("login")
         },
         properties = DialogProperties(
@@ -66,6 +67,7 @@ internal fun successDialog(navController: NavController) {
             Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .testTag("signinValidationDialog")
         ) {
             Box(
                 Modifier
@@ -244,6 +246,8 @@ private fun dialogBody(navController: NavController) {
         mainButton(
             MainButtonData(
                 onClick = {
+                    Log.d("App", "Closing dialog")
+                    resetSignInStates()
                     navController.navigate("login")
                 },
                 text = "Compris !",

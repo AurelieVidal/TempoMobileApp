@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,10 +29,8 @@ import com.example.tempomobileapp.enums.countries
 import com.example.tempomobileapp.models.SecurityQuestion
 import com.example.tempomobileapp.signin.components.bottomDecoration
 import com.example.tempomobileapp.signin.components.midTexts
-import com.example.tempomobileapp.signin.components.successDialog
 import com.example.tempomobileapp.signin.components.topDecoration
 import com.example.tempomobileapp.signin.components.topTexts
-import com.example.tempomobileapp.signin.components.userErrorText
 import com.example.tempomobileapp.signin.components.valitationButton
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.background
@@ -53,9 +50,6 @@ fun signInLayout(
     navController: NavHostController
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        resetSignInStates()
-    }
 
     Box(
         modifier = Modifier
@@ -65,12 +59,16 @@ fun signInLayout(
         topDecoration()
 
         if (securityQuestions.isNotEmpty()) {
+            Log.d("App", "Security questions: $securityQuestions")
             val coroutineScope = rememberCoroutineScope()
 
-            securityQuestions.forEach { _ ->
-                securityAnswers.add(mutableStateOf(""))
-                securityErrors.add(mutableStateOf(null))
+            if (securityAnswers.isEmpty()) {
+                securityQuestions.forEach { _ ->
+                    securityAnswers.add(mutableStateOf(""))
+                    securityErrors.add(mutableStateOf(null))
+                }
             }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -85,16 +83,8 @@ fun signInLayout(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     formFields(coroutineScope, securityQuestions)
-
-                    if (userError == true) {
-                        userErrorText()
-                    }
-
-                    valitationButton(securityQuestions, context)
+                    valitationButton(securityQuestions, context, navController)
                 }
-            }
-            if (openDialog) {
-                successDialog(navController)
             }
         } else {
             Box(
@@ -127,17 +117,14 @@ private fun formFields(coroutineScope: CoroutineScope, securityQuestions: List<S
     Spacer(modifier = Modifier.height(32.dp))
 }
 
-fun getDefaultCountry(): Country {
-    val defaultCountryCode = Locale.getDefault().country
+fun getDefaultCountry(locale: Locale = Locale.getDefault()): Country {
+    val defaultCountryCode = locale.country
     return countries.firstOrNull { it.code == defaultCountryCode }
         ?: Country("Format libre", "", "", R.drawable.flag_white, "")
 }
 
 internal suspend fun createUser(securityQuestions: List<SecurityQuestion>, context: Context) {
     Log.d("App", "Creating user")
-
-    userError = false
-    openDialog = true
 
     Log.d("App", "Valid user")
     Log.d("App", "Username: $username")
@@ -161,7 +148,6 @@ internal suspend fun createUser(securityQuestions: List<SecurityQuestion>, conte
         Settings.Secure.ANDROID_ID
     )
     Log.d("App", "Device ID: $deviceId")
-
     TempoApiService.getInstance().createUser(
         UserCreate(
 

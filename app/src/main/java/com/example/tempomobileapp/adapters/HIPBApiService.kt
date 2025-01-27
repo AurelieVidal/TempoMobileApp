@@ -10,7 +10,7 @@ import java.security.MessageDigest
 /**
  * ApiService is a singleton class that provides a Tempo API calling mechanism.
  */
-class HIPBApiService private constructor(
+class HIBPApiService private constructor(
     private val dispatcher: kotlinx.coroutines.CoroutineDispatcher = Dispatchers.IO
 ) {
 
@@ -22,7 +22,7 @@ class HIPBApiService private constructor(
     }
 
     /**
-     * Calls a specific route from the HIPB API.
+     * Calls a specific route from the HIBP API.
      * @param route The API route.
      * @param method The HTTP method (GET, POST, PUT, DELETE).
      * @param body The request body for POST/PUT methods.
@@ -34,10 +34,6 @@ class HIPBApiService private constructor(
         body: String? = null,
     ): Response? {
         val url = "$baseUrl$route"
-
-        if (body != null) {
-            Log.e("App", body)
-        }
 
         return apiService.makeApiCall(
             ApiService.ApiRequest(
@@ -54,12 +50,16 @@ class HIPBApiService private constructor(
      */
     companion object {
         @Volatile
-        private var INSTANCE: HIPBApiService? = null
+        private var INSTANCE: HIBPApiService? = null
 
-        fun getInstance(): HIPBApiService {
+        fun getInstance(): HIBPApiService {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: HIPBApiService().also { INSTANCE = it }
+                INSTANCE ?: HIBPApiService().also { INSTANCE = it }
             }
+        }
+
+        fun setInstanceForTesting(mockInstance: HIBPApiService) {
+            INSTANCE = mockInstance
         }
     }
 
@@ -70,8 +70,6 @@ class HIPBApiService private constructor(
 
         val hashBeginning = hashed.substring(0, 5)
         val hashEnd = hashed.substring(5).uppercase()
-
-        Log.d("App", "hashed : $hashed")
 
         val response = callApi(
             route = "/range/$hashBeginning",

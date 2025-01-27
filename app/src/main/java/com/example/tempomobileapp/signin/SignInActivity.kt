@@ -63,7 +63,6 @@ class SignInActivity(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         val injectedSecurityQuestionsProvider =
             DependencyInjector.securityQuestionsProvider ?: securityQuestionsProvider
 
@@ -84,13 +83,14 @@ class SignInActivity(
         }
 
         setContent {
-            Log.d("App", "Composition de l'interface")
             tempoMobileAppTheme {
                 val navController = rememberNavController()
+
                 NavHost(navController = navController, startDestination = "signin") {
                     composable(
                         route = "signin",
                     ) {
+
                         signInLayout(
                             securityQuestions = securityQuestionsState.value,
                             navController
@@ -123,9 +123,9 @@ class SignInActivity(
 
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
+        resetSignInStates()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
-
         finish()
     }
 }

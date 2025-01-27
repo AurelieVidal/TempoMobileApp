@@ -64,6 +64,10 @@ class TempoApiService private constructor(
                 INSTANCE ?: TempoApiService().also { INSTANCE = it }
             }
         }
+
+        fun setInstanceForTesting(mockInstance: TempoApiService) {
+            INSTANCE = mockInstance
+        }
     }
 
     suspend fun checkHealth(): Boolean = withContext(dispatcher) {
@@ -94,8 +98,6 @@ class TempoApiService private constructor(
             Log.e("App", "Erreur API : ${response?.code}")
             throw ApiException("Unable to get security questions")
         }
-
-        return@withContext emptyList()
     }
 
     fun parseQuestions(jsonString: String): List<SecurityQuestion> {
@@ -108,8 +110,13 @@ class TempoApiService private constructor(
 
         val questionsJsonArray = jsonObject.getAsJsonArray("questions")
 
-        val type = object : TypeToken<List<SecurityQuestion>>() {}.type
-        return gson.fromJson(questionsJsonArray, type)
+        return questionsJsonArray.map { questionElement ->
+            val questionObject = questionElement.asJsonObject
+            SecurityQuestion(
+                id = questionObject["id"].asInt,
+                question = questionObject["question"].asString
+            )
+        }
     }
 
     suspend fun checkIfUserAvailable(username: String): Boolean = withContext(dispatcher) {
@@ -119,17 +126,12 @@ class TempoApiService private constructor(
                 method = "GET"
             )
 
-            if (response == null) {
-                Log.e("App", "Réponse API null")
-                throw ApiException("Erreur inattendue de l'API : Réponse null")
-            }
-
-            return@withContext when (response.code) {
+            return@withContext when (response?.code) {
                 404 -> true
                 200 -> false
                 else -> {
-                    Log.e("App", "Code de réponse inattendu : ${response.code}")
-                    throw ApiException("Erreur inattendue de l'API : Code ${response.code}")
+                    Log.e("App", "Code de réponse inattendu : ${response?.code}")
+                    throw ApiException("Erreur inattendue de l'API : Code ${response?.code}")
                 }
             }
         } catch (e: IOException) {
@@ -171,7 +173,9 @@ class TempoApiService private constructor(
             Log.d("App", "Réponse API : ${response?.body?.string()}")
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
+            throw ApiException("Erreur lors de la création de l'utilisateur")
         }
+        return@withContext true
     }
 }
 

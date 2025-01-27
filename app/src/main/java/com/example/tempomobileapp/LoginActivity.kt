@@ -41,10 +41,14 @@ class LoginActivity : ComponentActivity() {
                     ) {
                         val context = LocalContext.current
 
-                        LaunchedEffect(Unit) {
-                            context.startActivity(Intent(context, SignInActivity::class.java))
-                            (context as? ComponentActivity)?.finish()
+                        // Démarrer une nouvelle instance de SignInActivity
+                        val intent = Intent(context, SignInActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
+                        context.startActivity(intent)
+
+                        // Terminer l'activité actuelle pour éviter des instances superposées
+                        (context as? ComponentActivity)?.finish()
                     }
                 }
             }

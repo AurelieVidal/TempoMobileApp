@@ -83,7 +83,8 @@ internal fun usernameField(coroutineScope: CoroutineScope) {
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             isPassword = false,
-            borderColor = if (usernameError.value != null) Main3 else Main1
+            borderColor = if (usernameError.value != null) Main3 else Main1,
+            testTag = "usernameField"
         )
     )
     if (usernameError.value != null) {
@@ -121,7 +122,8 @@ internal fun emailField() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isPassword = false,
             maxLength = 250,
-            borderColor = if (emailError != null) Main3 else Main1
+            borderColor = if (emailError != null) Main3 else Main1,
+            testTag = "emailField"
         )
     )
     if (emailError != null) {
@@ -159,7 +161,8 @@ internal fun phoneField() {
             phoneNumber = phoneNumber,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             selectedCountry = selectedCountry,
-            borderColor = if (phoneError != null) Main3 else Main1
+            borderColor = if (phoneError != null) Main3 else Main1,
+            testTag = "phoneField"
         )
     )
     if (phoneError != null) {
@@ -207,7 +210,8 @@ internal fun passwordField(coroutineScope: CoroutineScope) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             isPassword = true,
             maxLength = 30,
-            borderColor = if (passwordError != null) Main3 else Main1
+            borderColor = if (passwordError != null) Main3 else Main1,
+            testTag = "passwordField"
         )
     )
     if (passwordError != null) {
@@ -246,7 +250,8 @@ internal fun confirmPasswordField() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             isPassword = true,
             maxLength = 30,
-            borderColor = if (passwordCheckError != null) Main3 else Main1
+            borderColor = if (passwordCheckError != null) Main3 else Main1,
+            testTag = "checkPasswordField"
         )
     )
     if (passwordCheckError != null) {
@@ -263,6 +268,7 @@ internal fun confirmPasswordField() {
 
 @Composable
 internal fun securityQuestionsFields(securityQuestions: List<SecurityQuestion>) {
+    val testTags: List<String> = listOf("questionField1", "questionField2", "questionField3")
     securityQuestions.forEachIndexed { index, question ->
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -282,7 +288,8 @@ internal fun securityQuestionsFields(securityQuestions: List<SecurityQuestion>) 
                     securityErrors[index].value = null
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                borderColor = if (securityErrors[index].value != null) Main3 else Main1
+                borderColor = if (securityErrors[index].value != null) Main3 else Main1,
+                testTag = testTags[index]
             )
 
         )

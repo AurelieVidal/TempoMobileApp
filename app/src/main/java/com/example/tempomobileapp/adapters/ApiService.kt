@@ -98,18 +98,33 @@ class ApiService private constructor() {
     }
 
     private fun executeRequest(request: Request): Response? {
-        return try {
-            val response = client.newCall(request).execute()
+        Log.d("App", "Executing request: $request")
+        var attempt = 0
+        val maxRetries = 5
+        var lastResponse: Response? = null
 
-            if (!response.isSuccessful) {
-                Log.e("ApiService", "HTTP error ${response.code}: ${response.message}")
+        while (attempt < maxRetries) {
+            try {
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful) {
+                    return response
+                } else {
+                    lastResponse = response
+                    Log.e("App", "HTTP error ${response.code}: ${response.message}")
+                }
+            } catch (e: IOException) {
+                Log.e("App", "Error during API call (attempt ${attempt + 1}): ${e.message}")
             }
 
-            response
-        } catch (e: IOException) {
-            Log.e("ApiService", "Error during API call: ${e.message}")
-            null
+            attempt++
+            if (attempt < maxRetries) {
+                Thread.sleep(1000)
+            }
         }
+
+        Log.e("App", "API call failed after $maxRetries attempts")
+        return lastResponse
+
     }
 
     /**

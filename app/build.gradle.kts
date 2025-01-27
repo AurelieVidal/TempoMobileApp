@@ -60,6 +60,18 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
 }
 
 tasks.withType(org.gradle.api.tasks.testing.Test::class.java) {
@@ -137,5 +149,9 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:8.13.15")
     implementation("com.github.MahboubehSeyedpour:jetpack-loading:1.1.0")
     implementation("com.google.code.gson:gson:2.9.0")
+    testImplementation("io.mockk:mockk:1.13.5")
+    androidTestImplementation("io.mockk:mockk-android:1.13.5")
+    testImplementation("com.linkedin.dexmaker:dexmaker:2.28.1")
+    testImplementation("com.linkedin.dexmaker:dexmaker-mockito:2.28.1")
 
 }
