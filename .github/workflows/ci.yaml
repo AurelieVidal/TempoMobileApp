@@ -48,11 +48,11 @@ jobs:
         with:
           api-level: 29
           script: |
+            adb devices # Vérifie si l'émulateur est détecté
             ./gradlew connectedDebugAndroidTest
             ./gradlew jacocoTestReport
           emulator-boot-timeout: 1200
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-
+          emulator-options: -no-snapshot-save -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         # Génération et fusion des rapports Jacoco
       - name: Generate Jacoco Test Report
         uses: reactivecircus/android-emulator-runner@v2

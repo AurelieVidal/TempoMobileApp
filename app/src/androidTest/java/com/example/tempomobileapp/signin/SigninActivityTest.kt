@@ -136,6 +136,7 @@ class SigninActivityTest {
         composeTestRule.onNodeWithTag("validationButton").performClick()
 
         // Étape 4 : Vérifier que le Dialog s'affiche
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("signinValidationDialog")
             .assertIsDisplayed()
 
@@ -207,18 +208,6 @@ class SigninActivityTest {
 
         resetSignInStates()
 
-        /*
-        // Étape 5 : Simuler un clic sur le bouton "Compris !"
-        composeTestRule.onNodeWithText("Compris !").performClick()
-
-        // Étape 6 : Vérifier la navigation vers LoginActivity
-        scenario.onActivity { activity ->
-            val expectedIntent = Intent(activity, LoginActivity::class.java)
-            val resolvedActivity = activity.packageManager.resolveActivity(expectedIntent, 0)
-            assert(resolvedActivity != null) {
-                "L'utilisateur n'a pas été redirigé vers LoginActivity."
-            }
-        }*/
     }
 
     @Test
@@ -291,6 +280,8 @@ class SigninActivityTest {
 
 
         composeTestRule.onNodeWithTag("flagClickable").performClick()
+
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("flagDialog").assertIsDisplayed()
         composeTestRule.onNodeWithTag("searchField").performTextInput("france")
 
