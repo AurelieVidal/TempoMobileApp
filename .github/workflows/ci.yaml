@@ -58,11 +58,13 @@ jobs:
         with:
           api-level: 29
           script: |
-            adb devices # Vérifie si l'émulateur est détecté
+            export DISPLAY=:0
+            adb wait-for-device
+            adb shell 'while [[ $(getprop sys.boot_completed) != "1" ]]; do sleep 1; done'
             ./gradlew connectedDebugAndroidTest
             ./gradlew jacocoTestReport
           emulator-boot-timeout: 1200
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
 
         # Génération et fusion des rapports Jacoco
       - name: Generate Jacoco Test Report
