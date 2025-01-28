@@ -51,13 +51,13 @@ jobs:
             ./gradlew connectedDebugAndroidTest
             ./gradlew jacocoTestReport
           emulator-boot-timeout: 1200
-          emulator-options: -no-snapshot-save -gpu host -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
 
         # Génération et fusion des rapports Jacoco
       - name: Generate Jacoco Test Report
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 26
           script: ./gradlew jacocoTestReport
           emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
