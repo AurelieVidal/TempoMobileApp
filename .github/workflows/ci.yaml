@@ -52,20 +52,27 @@ jobs:
         env:
           DISPLAY: :0
 
-    # Run emulator and Android tests
+      - name: Start Emulator
+        run: |
+          export DISPLAY=:0
+          echo "Starting emulator"
+          $ANDROID_HOME/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
+          adb wait-for-device
+          adb shell 'while [[ $(getprop sys.boot_completed) != "1" ]]; do sleep 1; done'
+
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           script: |
-            export DISPLAY=:0
-            adb wait-for-device
-            adb shell 'while [[ $(getprop sys.boot_completed) != "1" ]]; do sleep 1; done'
+            adb devices
             ./gradlew connectedDebugAndroidTest
             ./gradlew jacocoTestReport
-          emulator-boot-timeout: 1200
+          emulator-boot-timeout: 1800
           emulator-options: -no-snapshot-save -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
 
+      - name: Check Emulator Logs
+        run: adb logcat > emulator_logs.txt
         # Génération et fusion des rapports Jacoco
       - name: Generate Jacoco Test Report
         uses: reactivecircus/android-emulator-runner@v2
