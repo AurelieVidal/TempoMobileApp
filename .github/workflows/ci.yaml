@@ -47,7 +47,10 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
+          target: google_apis
+          arch: x86_64
           disable-gpu: true
+          emulator-options: "-gpu swiftshader_indirect"
           script: adb wait-for-device && ./gradlew connectedDebugAndroidTest
       # Génération et fusion des rapports Jacoco
       # Run emulator and Android tests
