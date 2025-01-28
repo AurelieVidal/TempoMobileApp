@@ -48,8 +48,8 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew connectedDebugAndroidTest
-          emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-boot-timeout: 1200
+          emulator-options: -skin 1080x1920 -density 420 -no-snapshot-save -no-window -gpu host -noaudio -no-boot-anim
 
       # Génération et fusion des rapports Jacoco
       # Run emulator and Android tests
