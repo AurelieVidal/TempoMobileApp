@@ -11,9 +11,7 @@ import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-
 class PasswordValidatorTest {
-
 
     @Test
     fun checkPassword_should_return_true_if_password_is_valid() = runBlocking {
@@ -45,7 +43,6 @@ class PasswordValidatorTest {
         mockkObject(HIBPApiService)
         every { HIBPApiService.getInstance() } returns mockHIBPApiService
         coEvery { mockHIBPApiService.checkPassword(password) } returns false
-
 
         var message: String? = ""
 
@@ -83,7 +80,6 @@ class PasswordValidatorTest {
             "Le mot de passe ne doit pas contenir plus de 3 caractères identiques consécutifs"
         )
     }
-
 
     @Test
     fun checkPassword_should_return_false_if_password_has_series() = runBlocking {
@@ -190,5 +186,4 @@ class PasswordValidatorTest {
             "Le mot de passe ne doit pas contenir d'informations personnelles comme le pseudo ou l'email"
         )
     }
-
 }

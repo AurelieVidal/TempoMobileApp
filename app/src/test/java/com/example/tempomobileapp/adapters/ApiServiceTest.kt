@@ -15,8 +15,6 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.any
 import java.io.IOException
 
 class ApiServiceTest {
@@ -25,7 +23,7 @@ class ApiServiceTest {
 
     @Before
     fun setup() {
-        mockClient = mockk(relaxed = true) // Création d'un mock relaxé pour éviter les exceptions sur les méthodes non stubées.
+        mockClient = mockk(relaxed = true)
         mockBuilder = mockk(relaxed = true)
 
         val apiService = ApiService.getInstance()
@@ -64,7 +62,6 @@ class ApiServiceTest {
         every { mockBuilder.writeTimeout(any(), any()) } returns mockBuilder
         every { mockBuilder.build() } returns mockClient
 
-
         val mockResponse = Response.Builder()
             .request(Request.Builder().url("https://example.com/test").build())
             .protocol(Protocol.HTTP_1_1)
@@ -76,7 +73,6 @@ class ApiServiceTest {
         val mockCall = mockk<Call>()
         every { mockCall.execute() } returns mockResponse
         every { mockClient.newCall(any()) } returns mockCall
-
 
         val apiService = ApiService.getInstance()
         val response = apiService.makeApiCall(

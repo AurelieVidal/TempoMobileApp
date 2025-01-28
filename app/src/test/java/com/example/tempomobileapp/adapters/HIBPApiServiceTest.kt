@@ -13,10 +13,6 @@ import okhttp3.ResponseBody
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 
 class HIBPApiServiceTest {
 
@@ -63,7 +59,6 @@ class HIBPApiServiceTest {
             mockApiService.makeApiCall(any())
         } returns mockResponse
 
-
         val route = "/range"
         hibpApiService.callApi(route)
 
@@ -80,18 +75,18 @@ class HIBPApiServiceTest {
         }
     }
 
-
     @Test
     fun checkPassword_should_return_false_when_password_is_strong() = runBlocking {
         val mockResponse = mockk<Response>()
         val mockResponseBody = mockk<ResponseBody>()
 
-        every { mockResponseBody.string() } returns """
+        every {
+            mockResponseBody.string()
+        } returns """
             C7008F9CAB4083784BBD1874F76618D2A97:5
             C4FDAC6008F9CAB4083784CBD1D74F76618:10
             D6008F9CAB408378ACBD1874F76618D2A97:2
         """.trimIndent()
-
 
         every { mockResponse.isSuccessful } returns true
         every { mockResponse.code } returns 200
@@ -117,7 +112,9 @@ class HIBPApiServiceTest {
         val mockResponse = mockk<Response>()
         val mockResponseBody = mockk<ResponseBody>()
 
-        every { mockResponseBody.string() } returns """
+        every {
+            mockResponseBody.string()
+        } returns """
             C6008F9CAB4083784CBD1874F76618D2A97:5
             C6008F9CAB4083784CBD1874F76618D2A97:150
             c6008f9cab4083784cbd1874f76618d2a97:2

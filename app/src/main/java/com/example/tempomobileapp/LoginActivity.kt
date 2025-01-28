@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,13 +40,11 @@ class LoginActivity : ComponentActivity() {
                     ) {
                         val context = LocalContext.current
 
-                        // Démarrer une nouvelle instance de SignInActivity
                         val intent = Intent(context, SignInActivity::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
                         context.startActivity(intent)
 
-                        // Terminer l'activité actuelle pour éviter des instances superposées
                         (context as? ComponentActivity)?.finish()
                     }
                 }

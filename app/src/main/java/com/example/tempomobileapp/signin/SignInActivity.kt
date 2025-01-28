@@ -90,7 +90,6 @@ class SignInActivity(
                     composable(
                         route = "signin",
                     ) {
-
                         signInLayout(
                             securityQuestions = securityQuestionsState.value,
                             navController

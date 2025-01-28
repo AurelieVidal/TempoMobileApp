@@ -153,7 +153,9 @@ class TempoApiServiceTest {
         val mockResponse = mockk<Response>()
         val mockResponseBody = mockk<ResponseBody>()
 
-        every { mockResponseBody.string() } returns """
+        every {
+            mockResponseBody.string()
+        } returns """
         {
           "questions": [
             {
@@ -207,14 +209,15 @@ class TempoApiServiceTest {
         )
     }
 
-
     @Test
     fun getSecurityQuestions_should_throw_json_exception_if_response_in_incorrect_format() =
         runBlocking {
             val mockResponse = mockk<Response>()
             val mockResponseBody = mockk<ResponseBody>()
 
-            every { mockResponseBody.string() } returns """
+            every {
+                mockResponseBody.string()
+            } returns """
                 {
                   "bad_format": [
                     {
@@ -274,7 +277,6 @@ class TempoApiServiceTest {
 
         assertEquals("Unable to get security questions", exception.message)
     }
-
 
     @Test
     fun checkIfUserAvailable_should_return_false_if_user_found() = runBlocking {
@@ -350,7 +352,6 @@ class TempoApiServiceTest {
         verify { mockApiService.makeApiCall(any()) }
 
         assertEquals("Erreur inattendue de l'API : Code 403", exception.message)
-
     }
 
     @Test
@@ -465,5 +466,4 @@ class TempoApiServiceTest {
 
         verify { mockApiService.makeApiCall(any()) }
     }
-
 }

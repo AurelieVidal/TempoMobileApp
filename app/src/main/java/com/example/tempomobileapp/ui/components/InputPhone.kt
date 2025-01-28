@@ -268,7 +268,8 @@ fun countryRow(country: Country, onCountrySelected: (Country) -> Unit) {
             .clickable {
                 onCountrySelected(country)
             }
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .testTag(country.name),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

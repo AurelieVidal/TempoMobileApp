@@ -246,13 +246,10 @@ class SigninActivityTest {
     fun testOnBackPressedNavigatesToLoginActivity() {
         Intents.init()
 
-        // Lance l'activité
         val scenario = ActivityScenario.launch(SignInActivity::class.java)
 
-        // Simule le bouton retour
         Espresso.pressBack()
 
-        // Vérifie que LoginActivity est démarrée
         intended(hasComponent(LoginActivity::class.java.name))
 
         Intents.release()
@@ -261,7 +258,7 @@ class SigninActivityTest {
 
     @Test
     fun testGetDefaultCountryReturnsFormatLibreWhenCountryNotFound() {
-        val mockLocale = Locale("xx", "ZZ") // Pays inexistant
+        val mockLocale = Locale("xx", "ZZ")
 
         val defaultCountry = getDefaultCountry(mockLocale)
 
@@ -296,6 +293,10 @@ class SigninActivityTest {
         composeTestRule.onNodeWithTag("flagClickable").performClick()
         composeTestRule.onNodeWithTag("flagDialog").assertIsDisplayed()
         composeTestRule.onNodeWithTag("searchField").performTextInput("france")
+
+        composeTestRule.onNodeWithTag("France").performClick()
+        composeTestRule.onNodeWithTag("flagDialog").assertIsNotDisplayed()
+
 
         resetSignInStates()
 

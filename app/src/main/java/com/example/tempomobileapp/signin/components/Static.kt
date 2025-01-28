@@ -1,7 +1,6 @@
 package com.example.tempomobileapp.signin.components
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,7 +21,6 @@ import androidx.navigation.NavHostController
 import com.example.tempomobileapp.models.SecurityQuestion
 import com.example.tempomobileapp.signin.createUser
 import com.example.tempomobileapp.signin.isLoading
-import com.example.tempomobileapp.signin.userError
 import com.example.tempomobileapp.signin.validators.validateUserInputs
 import com.example.tempomobileapp.ui.components.MainButtonData
 import com.example.tempomobileapp.ui.components.decoration
@@ -127,46 +124,44 @@ internal fun userErrorText() {
         color = Main3,
         fontSize = 12.sp,
         textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth().testTag("errorMessage"),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("errorMessage"),
         lineHeight = 14.sp
     )
 }
 
 @Composable
-internal fun valitationButton(securityQuestions: List<SecurityQuestion>, context: Context, navController: NavHostController) {
+internal fun valitationButton(
+    securityQuestions: List<SecurityQuestion>,
+    context: Context,
+    navController: NavHostController
+) {
     val usernameErrorState = remember { mutableStateOf(false) }
     val dialogState = remember { mutableStateOf(false) }
-    Log.d("App", "Validating button ${usernameErrorState}")
-    if(usernameErrorState.value) {
-        Log.d("App", "PRINT ERROR")
+
+    if (usernameErrorState.value) {
         userErrorText()
     }
     Spacer(modifier = Modifier.height(32.dp))
-
-
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 64.dp)
     ) {
-        Log.d("App", "Button rendered")
         mainButton(
             MainButtonData(
                 onClick = {
-                    Log.d("App", "Validating button clicked")
                     if (!isLoading.value) {
-
                         isLoading.value = true
                         CoroutineScope(Dispatchers.Main).launch {
                             val validUser = validateUserInputs(securityQuestions)
                             if (validUser) {
-                                Log.d("App", "Validating user")
                                 usernameErrorState.value = false
                                 dialogState.value = true
                                 createUser(securityQuestions, context)
                             } else {
-                                Log.d("App", "Invalid user")
                                 usernameErrorState.value = true
                                 dialogState.value = false
                             }

@@ -59,7 +59,6 @@ fun signInLayout(
         topDecoration()
 
         if (securityQuestions.isNotEmpty()) {
-            Log.d("App", "Security questions: $securityQuestions")
             val coroutineScope = rememberCoroutineScope()
 
             if (securityAnswers.isEmpty()) {

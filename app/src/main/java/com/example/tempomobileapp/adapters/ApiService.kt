@@ -98,7 +98,6 @@ class ApiService private constructor() {
     }
 
     private fun executeRequest(request: Request): Response? {
-        Log.d("App", "Executing request: $request")
         var attempt = 0
         val maxRetries = 5
         var lastResponse: Response? = null
@@ -106,7 +105,7 @@ class ApiService private constructor() {
         while (attempt < maxRetries) {
             try {
                 val response = client.newCall(request).execute()
-                if (response.isSuccessful) {
+                if (response.code != 500) {
                     return response
                 } else {
                     lastResponse = response
@@ -124,7 +123,6 @@ class ApiService private constructor() {
 
         Log.e("App", "API call failed after $maxRetries attempts")
         return lastResponse
-
     }
 
     /**

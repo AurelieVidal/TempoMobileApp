@@ -28,7 +28,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
-
 class InputValidatorsTest {
 
     @Before
@@ -56,7 +55,6 @@ class InputValidatorsTest {
 
     @Test
     fun isUserValid_should_return_true_when_user_is_creatable() = runBlocking {
-
         val mockTempoApiService = mockk<TempoApiService>()
         coEvery { mockTempoApiService.checkIfUserAvailable(username) } returns true
         TempoApiService.setInstanceForTesting(mockTempoApiService)
@@ -64,7 +62,6 @@ class InputValidatorsTest {
         val mockHIBPApiService = mockk<HIBPApiService>()
         coEvery { mockHIBPApiService.checkPassword(password) } returns false
         HIBPApiService.setInstanceForTesting(mockHIBPApiService)
-
 
         val securityQuestions = listOf(
             SecurityQuestion(1, "Question 1"),
@@ -77,10 +74,8 @@ class InputValidatorsTest {
         assertTrue(isUserValid)
     }
 
-
     @Test
     fun isUserValid_should_return_false_when_fields_are_in_error() = runBlocking {
-
         email = "testexample.com"
         phoneNumber = "+33 1 02 04 03"
         passwordCheck = "different"
@@ -89,7 +84,6 @@ class InputValidatorsTest {
             mutableStateOf("answer2"),
             mutableStateOf("answer3")
         )
-
 
         val mockTempoApiService = mockk<TempoApiService>()
         coEvery { mockTempoApiService.checkIfUserAvailable(username) } returns false
@@ -112,7 +106,6 @@ class InputValidatorsTest {
 
     @Test
     fun isUserValid_should_return_false_when_empty_fields() = runBlocking {
-
         username = ""
         phoneNumber = ""
         email = ""
