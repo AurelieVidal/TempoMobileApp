@@ -46,11 +46,12 @@ jobs:
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 35
           script: adb wait-for-device && ./gradlew connectedDebugAndroidTest
           emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
           emulator-options: -no-snapshot-save -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-
+          arch: x86_64 # Set CPU/ABI to x86_64
+          profile: MediumPhone
       # Génération et fusion des rapports Jacoco
       # Run emulator and Android tests
       - name: Generate Jacoco Test Report
