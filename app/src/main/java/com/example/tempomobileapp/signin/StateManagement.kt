@@ -31,7 +31,7 @@ internal var passwordError by mutableStateOf<String?>(null)
 internal var password by mutableStateOf("")
 
 // Handle password confirmation input
-internal var passwordCheckError by mutableStateOf<String?>(null)
+internal var checkError by mutableStateOf<String?>(null)
 internal var passwordCheck by mutableStateOf("")
 
 // Handle security questions
@@ -55,7 +55,7 @@ internal fun resetSignInStates() {
     passwordError = null
     password = ""
 
-    passwordCheckError = null
+    checkError = null
     passwordCheck = ""
 
     securityAnswers.clear()

@@ -11,7 +11,7 @@ import com.example.tempomobileapp.signin.email
 import com.example.tempomobileapp.signin.emailError
 import com.example.tempomobileapp.signin.password
 import com.example.tempomobileapp.signin.passwordCheck
-import com.example.tempomobileapp.signin.passwordCheckError
+import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.passwordError
 import com.example.tempomobileapp.signin.phoneError
 import com.example.tempomobileapp.signin.phoneNumber
@@ -43,7 +43,7 @@ class InputValidatorsTest {
         password = "tetPassword91"
         passwordError = null
         passwordCheck = "tetPassword91"
-        passwordCheckError = null
+        checkError = null
         securityAnswers = mutableStateListOf(
             mutableStateOf("answer1"),
             mutableStateOf("answer2"),

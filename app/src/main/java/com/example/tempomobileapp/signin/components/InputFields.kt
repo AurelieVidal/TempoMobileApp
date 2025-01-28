@@ -17,7 +17,7 @@ import com.example.tempomobileapp.signin.email
 import com.example.tempomobileapp.signin.emailError
 import com.example.tempomobileapp.signin.password
 import com.example.tempomobileapp.signin.passwordCheck
-import com.example.tempomobileapp.signin.passwordCheckError
+import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.passwordError
 import com.example.tempomobileapp.signin.phoneError
 import com.example.tempomobileapp.signin.phoneNumber
@@ -245,18 +245,18 @@ internal fun confirmPasswordField() {
             value = passwordCheck,
             onValueChange = { newValue ->
                 passwordCheck = newValue
-                passwordCheckError = null
+                checkError = null
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             isPassword = true,
             maxLength = 30,
-            borderColor = if (passwordCheckError != null) Main3 else Main1,
+            borderColor = if (checkError != null) Main3 else Main1,
             testTag = "checkPasswordField"
         )
     )
-    if (passwordCheckError != null) {
+    if (checkError != null) {
         Text(
-            text = passwordCheckError ?: "",
+            text = checkError ?: "",
             color = Main3,
             fontSize = 12.sp,
             textAlign = TextAlign.End,

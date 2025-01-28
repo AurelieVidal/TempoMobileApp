@@ -8,7 +8,7 @@ import com.example.tempomobileapp.signin.email
 import com.example.tempomobileapp.signin.emailError
 import com.example.tempomobileapp.signin.password
 import com.example.tempomobileapp.signin.passwordCheck
-import com.example.tempomobileapp.signin.passwordCheckError
+import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.passwordError
 import com.example.tempomobileapp.signin.phoneError
 import com.example.tempomobileapp.signin.phoneNumber
@@ -101,7 +101,7 @@ internal suspend fun validateUserInputs(securityQuestions: List<SecurityQuestion
     }
 
     if (passwordCheck != password) {
-        passwordCheckError = "Les mots de passe ne correspondent pas."
+        checkError = "Les mots de passe ne correspondent pas."
         isValid = false
     }
 
