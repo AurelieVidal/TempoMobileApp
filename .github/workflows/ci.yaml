@@ -55,15 +55,20 @@ jobs:
             adb wait-for-device
             adb shell input keyevent 82
             ./gradlew connectedDebugAndroidTest
+
       # Génération et fusion des rapports Jacoco
-      # Run emulator and Android tests
       - name: Generate Jacoco Test Report
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew jacocoTestReport
-          emulator-boot-timeout: 1200 # Increased timeout to 20 minutes
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          target: default
+          arch: x86_64
+          profile: Nexus 4
+          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
+          script: |
+            adb wait-for-device
+            adb shell input keyevent 82
+            ./gradlew jacocoTestReport
 
       - name: Install XMLLint
         run: sudo apt-get install -y libxml2-utils
