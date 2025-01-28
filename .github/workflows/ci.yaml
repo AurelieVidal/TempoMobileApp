@@ -48,6 +48,7 @@ jobs:
         with:
           api-level: 29
           script: adb wait-for-device && ./gradlew connectedDebugAndroidTest
+          emulator-options: -no-snapshot-save -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
 
       # Génération et fusion des rapports Jacoco
       # Run emulator and Android tests
