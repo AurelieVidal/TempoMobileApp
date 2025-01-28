@@ -42,17 +42,18 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      # Run emulator and Android tests
+    # Run emulator and Android tests
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew connectedDebugAndroidTest
+          script: |
+            ./gradlew connectedDebugAndroidTest
+            ./gradlew jacocoTestReport
           emulator-boot-timeout: 1200
-          emulator-options: -skin 1080x1920 -density 420 -no-snapshot-save -no-window -gpu host -noaudio -no-boot-anim
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
 
-      # Génération et fusion des rapports Jacoco
-      # Run emulator and Android tests
+        # Génération et fusion des rapports Jacoco
       - name: Generate Jacoco Test Report
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -72,7 +73,7 @@ jobs:
           else
             echo "Jacoco Test Report not found!" && exit 1
           fi
-          
+
       # Vérification du taux de couverture
       - name: Check Coverage Threshold
         run: |
@@ -85,7 +86,7 @@ jobs:
             echo "Coverage threshold not met: $PERCENTAGE% (required: 90%)"
             exit 1
           fi
-          
+
       # Ajouter Detekt pour la vérification de la qualité du code
       - name: Run Detekt for linting
         run: ./gradlew detekt
