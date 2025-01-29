@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,16 +25,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tempomobileapp.ui.theme.background
 import com.example.tempomobileapp.utils.getDarkenColor
 import com.example.tempomobileapp.utils.getLightenColor
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Pressed
 import com.gandiva.neumorphic.shape.RoundedCorner
+import com.spr.jetpack_loading.components.indicators.PulsatingDot
 
 @Composable
 fun mainButton(
-    mainButtonData: MainButtonData
+    mainButtonData: MainButtonData,
+    isLoading: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -55,7 +59,7 @@ fun mainButton(
             .padding(horizontal = if (mainButtonData.isSmall) 0.dp else 8.dp),
         contentAlignment = Alignment.Center
     ) {
-        buttonText(mainButtonData.text, isPressed, mainButtonData.isSmall)
+        buttonText(mainButtonData.text, isPressed, mainButtonData.isSmall, isLoading)
     }
 }
 
@@ -75,22 +79,41 @@ private fun getButtonModifier(isPressed: Boolean, color: Color, isSmall: Boolean
 }
 
 @Composable
-private fun buttonText(text: String, isPressed: Boolean, isSmall: Boolean) {
+private fun buttonText(
+    text: String,
+    isPressed: Boolean,
+    isSmall: Boolean,
+    isLoading: Boolean = false
+) {
     val fontSize = if (isSmall) 12f else 18f
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = tween(durationMillis = 100)
     )
-
-    Text(
-        text = text,
-        color = Color.White,
-        fontSize = fontSize.sp,
-        modifier = Modifier
-            .scale(scale)
-            .graphicsLayer { clip = true }
-            .wrapContentSize(Alignment.Center)
-    )
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            PulsatingDot(
+                color = background,
+                ballDiameter = 30f,
+                animationDuration = 1000,
+                horizontalSpace = 40f
+            )
+        }
+    } else {
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = fontSize.sp,
+            modifier = Modifier
+                .scale(scale)
+                .graphicsLayer { clip = true }
+                .wrapContentSize(Alignment.Center)
+        )
+    }
 }
 
 /**

@@ -4,4 +4,5 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_error">ErrorActivity</string>
     <string name="title_activity_wait">WaitActivity</string>
+    <string name="title_activity_signin">SignInActivity</string>
 </resources>

@@ -1,12 +1,15 @@
 package com.example.tempomobileapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.tempomobileapp.signin.SignInActivity
 import com.example.tempomobileapp.ui.theme.tempoMobileAppTheme
 import loginLayout
 
@@ -31,6 +34,18 @@ class LoginActivity : ComponentActivity() {
                         route = "home"
                     ) {
                         greeting(name = "Welcome to Home")
+                    }
+                    composable(
+                        route = "signin"
+                    ) {
+                        val context = LocalContext.current
+
+                        val intent = Intent(context, SignInActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        context.startActivity(intent)
+
+                        (context as? ComponentActivity)?.finish()
                     }
                 }
             }

@@ -1,9 +1,15 @@
 package com.example.tempomobileapp.adapters
 
 import android.util.Log
+import com.example.tempomobileapp.exceptions.ApiException
+import com.example.tempomobileapp.models.SecurityQuestion
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Response
+import java.io.IOException
 
 /**
  * ApiService is a singleton class that provides a Tempo API calling mechanism.
@@ -33,10 +39,6 @@ class TempoApiService private constructor(
     ): Response? {
         val url = "$baseUrl$route"
 
-        if (body != null) {
-            Log.e("App", body)
-        }
-
         return apiService.makeApiCall(
             ApiService.ApiRequest(
                 url = url,
@@ -61,6 +63,10 @@ class TempoApiService private constructor(
                 INSTANCE ?: TempoApiService().also { INSTANCE = it }
             }
         }
+
+        fun setInstanceForTesting(mockInstance: TempoApiService) {
+            INSTANCE = mockInstance
+        }
     }
 
     suspend fun checkHealth(): Boolean = withContext(dispatcher) {
@@ -71,12 +77,115 @@ class TempoApiService private constructor(
 
         val isSuccessful = response?.isSuccessful == true
         if (isSuccessful) {
-            if (response != null) {
-                Log.d("App", "Réponse API : ${response.body?.string()}")
-            }
+            Log.d("App", "Réponse API : ${response?.body?.string()}")
         } else {
             Log.e("App", "Erreur API : ${response?.code}")
         }
         isSuccessful
     }
+
+    suspend fun getSecurityQuestions(): List<SecurityQuestion> = withContext(dispatcher) {
+        val response = callApi(
+            route = "/security/question/random/3",
+            method = "GET"
+        )
+
+        if (response?.isSuccessful == true && response.body != null) {
+            val jsonString = response.body?.string()
+            return@withContext parseQuestions(jsonString ?: "")
+        } else {
+            Log.e("App", "Erreur API : ${response?.code}")
+            throw ApiException("Unable to get security questions")
+        }
+    }
+
+    fun parseQuestions(jsonString: String): List<SecurityQuestion> {
+        val gson = Gson()
+        val jsonObject = gson.fromJson(jsonString, JsonObject::class.java)
+
+        if (!jsonObject.has("questions")) {
+            throw JsonSyntaxException("Unexpected response format")
+        }
+
+        val questionsJsonArray = jsonObject.getAsJsonArray("questions")
+
+        return questionsJsonArray.map { questionElement ->
+            val questionObject = questionElement.asJsonObject
+            SecurityQuestion(
+                id = questionObject["id"].asInt,
+                question = questionObject["question"].asString
+            )
+        }
+    }
+
+    suspend fun checkIfUserAvailable(username: String): Boolean = withContext(dispatcher) {
+        try {
+            val response = callApi(
+                route = "/users/$username",
+                method = "GET"
+            )
+
+            return@withContext when (response?.code) {
+                404 -> true
+                200 -> false
+                else -> {
+                    Log.e("App", "Code de réponse inattendu : ${response?.code}")
+                    throw ApiException("Erreur inattendue de l'API : Code ${response?.code}")
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("App", "Erreur lors de l'appel API : ${e.message}")
+            throw IllegalStateException("Erreur inattendue de l'API : ${e.message}", e)
+        }
+    }
+
+    suspend fun createUser(userCreate: UserCreate) = withContext(dispatcher) {
+        val password = userCreate.password.trimEnd()
+        val email = userCreate.email.trimEnd()
+        val phone = userCreate.phoneNumber.replace(" ", "")
+        val questions = userCreate.securityQuestions.map { question ->
+            question.copy(response = question.response.trimEnd())
+        }
+
+        val payload = mapOf(
+            "username" to userCreate.username,
+            "password" to password,
+            "email" to email,
+            "phone" to phone,
+            "device" to userCreate.deviceId,
+            "questions" to questions.map { question ->
+                mapOf(
+                    "questionId" to question.id,
+                    "response" to question.response
+                )
+            }
+        )
+
+        val response = callApi(
+            route = "/users",
+            method = "POST",
+            body = Gson().toJson(payload)
+        )
+
+        val isSuccessful = response?.isSuccessful == true
+        if (isSuccessful) {
+            Log.d("App", "Réponse API : ${response?.body?.string()}")
+        } else {
+            Log.e("App", "Erreur API : ${response?.code}")
+            throw ApiException("Erreur lors de la création de l'utilisateur")
+        }
+        return@withContext true
+    }
 }
+
+/**
+ * Data class that contains all necessary information to create a user
+ */
+data class UserCreate(
+    val username: String,
+    val password: String,
+    val email: String,
+    val phoneNumber: String,
+    val securityQuestions: List<SecurityQuestion>,
+    val deviceId: String,
+)

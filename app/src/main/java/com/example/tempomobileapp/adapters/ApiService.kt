@@ -1,6 +1,7 @@
 package com.example.tempomobileapp.adapters
 
 import android.util.Log
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -78,11 +79,18 @@ class ApiService private constructor() {
         headers.forEach { (key, value) ->
             requestBuilder.addHeader(key, value)
         }
+        val contentType = "application/json"
 
         when (method.uppercase()) {
             "GET" -> requestBuilder.get()
-            "POST" -> requestBuilder.post(body?.toRequestBody() ?: "".toRequestBody())
-            "PUT" -> requestBuilder.put(body?.toRequestBody() ?: "".toRequestBody())
+            "POST" -> {
+                requestBuilder.addHeader("Content-Type", contentType)
+                requestBuilder.post(body?.toRequestBody(contentType.toMediaType()) ?: "".toRequestBody())
+            }
+            "PUT" -> {
+                requestBuilder.addHeader("Content-Type", contentType)
+                requestBuilder.put(body?.toRequestBody(contentType.toMediaType()) ?: "".toRequestBody())
+            }
             "DELETE" -> requestBuilder.delete()
             else -> throw IllegalArgumentException("Unsupported HTTP method: $method")
         }
@@ -91,16 +99,31 @@ class ApiService private constructor() {
     }
 
     private fun executeRequest(request: Request): Response? {
-        return try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                throw IOException("HTTP error ${response.code}: ${response.message}")
+        var attempt = 0
+        val maxRetries = 5
+        var lastResponse: Response? = null
+
+        while (attempt < maxRetries) {
+            try {
+                val response = client.newCall(request).execute()
+                if (response.code != 500) {
+                    return response
+                } else {
+                    lastResponse = response
+                    Log.e("App", "HTTP error ${response.code}: ${response.message}")
+                }
+            } catch (e: IOException) {
+                Log.e("App", "Error during API call (attempt ${attempt + 1}): ${e.message}")
             }
-            response
-        } catch (e: IOException) {
-            Log.e("ApiService", "Error during API call: ${e.message}")
-            null
+
+            attempt++
+            if (attempt < maxRetries) {
+                Thread.sleep(1000)
+            }
         }
+
+        Log.e("App", "API call failed after $maxRetries attempts")
+        return lastResponse
     }
 
     /**

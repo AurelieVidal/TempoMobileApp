@@ -18,3 +18,5 @@ val Main2 = Color(0xFFBC64EF)
 val Main3 = Color(0xFFF065A6)
 val Main4 = Color(0xFFEA65F0)
 val Main5 = Color(0xFF8F65F0)
+
+val background_dark = Color(0xFFB39BB1)
