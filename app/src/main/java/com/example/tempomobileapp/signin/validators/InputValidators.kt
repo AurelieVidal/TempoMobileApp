@@ -58,30 +58,24 @@ private fun isPhoneNumberValid(
     selectedCountry: Country,
     onError: (String?) -> Unit
 ): Boolean {
-    val isValid = when {
+    return when {
         phoneNumber.isBlank() -> {
             onError("Tu dois renseigner ton numéro de téléphone.")
             false
         }
-        selectedCountry.phoneFormat == "" -> {
-            onError(null)
-            true
-        }
-        !selectedCountry.phoneFormat
+        selectedCountry.phoneFormat.isEmpty() || selectedCountry.phoneFormat
             .replace("#", "\\d")
             .replace("+", "\\+")
             .toRegex()
             .matches(phoneNumber) -> {
-            onError("Le numéro de téléphone que tu as entré n'est pas valide...")
-            false
-        }
-        else -> {
             onError(null)
             true
         }
+        else -> {
+            onError("Le numéro de téléphone que tu as entré n'est pas valide...")
+            false
+        }
     }
-
-    return isValid
 }
 
 internal suspend fun validateUserInputs(securityQuestions: List<SecurityQuestion>): Boolean {
