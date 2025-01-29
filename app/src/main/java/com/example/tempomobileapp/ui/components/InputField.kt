@@ -66,20 +66,7 @@ fun inputField(
             keyboardOptions = inputFieldData.keyboardOptions,
             colors = getTextFieldColors(borderColor),
             trailingIcon = {
-                if (inputFieldData.isPassword) {
-                    passwordVisibilityToggleIcon(
-                        showPassword = passwordVisible,
-                        onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
-                        iconColor = borderColor,
-                        iconTestTag = if (passwordVisible) "hidePasswordIcon" else "showPasswordIcon"
-                    )
-                } else if (inputFieldData.trailingIcon != null) {
-                    Icon(
-                        imageVector = inputFieldData.trailingIcon,
-                        contentDescription = "Custom icon",
-                        tint = borderColor
-                    )
-                }
+                getTrailingIcon(inputFieldData, passwordVisible) { passwordVisible = !passwordVisible }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,6 +91,28 @@ fun passwordVisibilityToggleIcon(
         modifier = Modifier.testTag(iconTestTag)
     ) {
         Icon(imageVector = image, contentDescription = contentDescription, tint = iconColor)
+    }
+}
+
+@Composable
+private fun getTrailingIcon(
+    inputFieldData: InputFieldData,
+    passwordVisible: Boolean,
+    onTogglePasswordVisibility: () -> Unit
+) {
+    if (inputFieldData.isPassword) {
+        passwordVisibilityToggleIcon(
+            showPassword = passwordVisible,
+            onTogglePasswordVisibility = onTogglePasswordVisibility,
+            iconColor = inputFieldData.borderColor,
+            iconTestTag = if (passwordVisible) "hidePasswordIcon" else "showPasswordIcon"
+        )
+    } else if (inputFieldData.trailingIcon != null) {
+        Icon(
+            imageVector = inputFieldData.trailingIcon,
+            contentDescription = "Custom icon",
+            tint = inputFieldData.borderColor
+        )
     }
 }
 

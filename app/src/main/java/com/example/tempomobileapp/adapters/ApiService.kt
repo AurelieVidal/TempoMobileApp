@@ -79,16 +79,17 @@ class ApiService private constructor() {
         headers.forEach { (key, value) ->
             requestBuilder.addHeader(key, value)
         }
+        val contentType = "application/json"
 
         when (method.uppercase()) {
             "GET" -> requestBuilder.get()
             "POST" -> {
-                requestBuilder.addHeader("Content-Type", "application/json")
-                requestBuilder.post(body?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody())
+                requestBuilder.addHeader("Content-Type", contentType)
+                requestBuilder.post(body?.toRequestBody(contentType.toMediaType()) ?: "".toRequestBody())
             }
             "PUT" -> {
-                requestBuilder.addHeader("Content-Type", "application/json")
-                requestBuilder.put(body?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody())
+                requestBuilder.addHeader("Content-Type", contentType)
+                requestBuilder.put(body?.toRequestBody(contentType.toMediaType()) ?: "".toRequestBody())
             }
             "DELETE" -> requestBuilder.delete()
             else -> throw IllegalArgumentException("Unsupported HTTP method: $method")

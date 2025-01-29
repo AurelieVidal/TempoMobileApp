@@ -14,6 +14,8 @@ data class Country(
     val phoneFormat: String
 )
 
+private const val DOMINICAN_REPUBLIC = "République dominicaine"
+
 val countries = listOf(
     Country("Format libre", "", "", R.drawable.flag_white, ""),
     Country("Afghanistan", "AF", "+93", R.drawable.flag_afghanistan, "+93 ## ######"),
@@ -109,21 +111,21 @@ val countries = listOf(
     Country("Danemark", "DK", "+45", R.drawable.flag_denmark, "+45 ## ## ## ##"),
     Country("Djibouti", "DJ", "+253", R.drawable.flag_djibouti, "+253 ## ######"),
     Country(
-        "République dominicaine",
+        DOMINICAN_REPUBLIC,
         "DO",
         "+1 809",
         R.drawable.flag_dominican_republic,
         "+1 809 ### ####"
     ),
     Country(
-        "République dominicaine",
+        DOMINICAN_REPUBLIC,
         "DO",
         "+1 829",
         R.drawable.flag_dominican_republic,
         "+1 829 ### ####"
     ),
     Country(
-        "République dominicaine",
+        DOMINICAN_REPUBLIC,
         "DO",
         "+1 849",
         R.drawable.flag_dominican_republic,

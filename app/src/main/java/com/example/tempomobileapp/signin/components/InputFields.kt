@@ -33,6 +33,7 @@ import com.example.tempomobileapp.ui.components.inputField
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.Main3
 import com.example.tempomobileapp.ui.theme.text
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-internal fun usernameField(coroutineScope: CoroutineScope) {
+internal fun usernameField(coroutineScope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(
         text = "Mon pseudo",
@@ -70,7 +71,7 @@ internal fun usernameField(coroutineScope: CoroutineScope) {
                 debounceJob = coroutineScope.launch {
                     delay(1000L)
                     if (value.isNotBlank()) {
-                        val isAvailable = withContext(Dispatchers.IO) {
+                        val isAvailable = withContext(dispatcher) {
                             TempoApiService.getInstance()
                                 .checkIfUserAvailable(value)
                         }

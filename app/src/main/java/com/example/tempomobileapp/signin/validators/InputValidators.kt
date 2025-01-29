@@ -17,16 +17,18 @@ import com.example.tempomobileapp.signin.securityErrors
 import com.example.tempomobileapp.signin.selectedCountry
 import com.example.tempomobileapp.signin.username
 import com.example.tempomobileapp.signin.usernameError
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 private suspend fun isUsernameValid(
     username: String,
-    onError: (String?) -> Unit
+    onError: (String?) -> Unit,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): Boolean {
     val errorMessage = when {
         username.isBlank() -> "Tu dois choisir un pseudo."
-        withContext(Dispatchers.IO) { !TempoApiService.getInstance().checkIfUserAvailable(username) } ->
+        withContext(dispatcher) { !TempoApiService.getInstance().checkIfUserAvailable(username) } ->
             "Ce pseudo est déjà utilisé."
         else -> null
     }
@@ -85,7 +87,7 @@ private fun isPhoneNumberValid(
 internal suspend fun validateUserInputs(securityQuestions: List<SecurityQuestion>): Boolean {
     var isValid = true
 
-    if (!isUsernameValid(username) { error -> usernameError.value = error }) {
+    if (!isUsernameValid(username, { error -> usernameError.value = error })) {
         isValid = false
     }
 
