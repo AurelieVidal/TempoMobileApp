@@ -125,7 +125,7 @@ val countries = listOf(
         "+1 829 ### ####"
     ),
     Country(
-        dominacan_republic,
+        DOMINICAN_REPUBLIC,
         "DO",
         "+1 849",
         R.drawable.flag_dominican_republic,
