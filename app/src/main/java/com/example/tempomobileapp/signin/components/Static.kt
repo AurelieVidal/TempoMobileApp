@@ -103,8 +103,8 @@ internal fun midTexts() {
 
     Spacer(modifier = Modifier.height(4.dp))
     Text(
-        text = "Réponds à ces questions en un mot et notes tes réponses quelque " +
-            "part, nous en auront besoin dans le cas où tu perdrait tes " +
+        text = "Réponds à ces questions en un mot et note bien tes réponses, " +
+            "nous en auront besoin dans le cas où tu perdrait tes " +
             "identifiants 😉",
         textAlign = TextAlign.Left,
         modifier = Modifier.fillMaxWidth(),
@@ -118,9 +118,8 @@ internal fun midTexts() {
 @Composable
 internal fun userErrorText() {
     Text(
-        text = "Attention, un ou plusieurs champs n'est pas rempli correctement, " +
-            "essaye de repasser sur les différentes question pour voir si tu " +
-            "n'aurais pas oublié quelque chose 😥",
+        text = "Attention, certains champs ne sont pas remplis correctement. Jette un œil aux " +
+            "questions, il manque peut-être un détail. 😥",
         color = Main3,
         fontSize = 12.sp,
         textAlign = TextAlign.Center,

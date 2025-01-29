@@ -54,7 +54,7 @@ class PasswordValidatorTest {
         assertFalse(isUserValid)
         assertEquals(
             message,
-            "Le mot de passe doit contenir au moins 10 caractères"
+            "Ton mot de passe doit faire au moins 10 caractères."
         )
     }
 
@@ -77,7 +77,7 @@ class PasswordValidatorTest {
         assertFalse(isUserValid)
         assertEquals(
             message,
-            "Le mot de passe ne doit pas contenir plus de 3 caractères identiques consécutifs"
+            "Tu ne peux pas avoir plus de 3 caractères identiques à la suite dans ton mot de passe."
         )
     }
 
@@ -100,7 +100,7 @@ class PasswordValidatorTest {
         assertFalse(isUserValid)
         assertEquals(
             message,
-            "Le mot de passe ne doit pas contenir de séries consécutives comme '123', 'abc', etc."
+            "Ton mot de passe ne doit pas contenir de séries consécutives comme '123', 'abc', etc."
         )
     }
 
@@ -121,7 +121,7 @@ class PasswordValidatorTest {
             "email@fake.com"
         ) { error -> message = error }
         assertFalse(isUserValid)
-        assertEquals(message, "Le mot de passe doit contenir au moins une lettre majuscule")
+        assertEquals(message, "Ajoute au moins une lettre majuscule dans ton mot de passe.")
     }
 
     @Test
@@ -141,7 +141,7 @@ class PasswordValidatorTest {
             "email@fake.com"
         ) { error -> message = error }
         assertFalse(isUserValid)
-        assertEquals(message, "Le mot de passe doit contenir au moins une lettre minuscule")
+        assertEquals(message, "Assure-toi d'inclure au moins une lettre minuscule dans ton mot de passe.")
     }
 
     @Test
@@ -161,7 +161,7 @@ class PasswordValidatorTest {
             "email@fake.com"
         ) { error -> message = error }
         assertFalse(isUserValid)
-        assertEquals(message, "Le mot de passe doit contenir au moins un chiffre")
+        assertEquals(message, "N'oublie pas d'ajouter au moins un chiffre dans ton mot de passe.")
     }
 
     @Test
@@ -183,7 +183,7 @@ class PasswordValidatorTest {
         assertFalse(isUserValid)
         assertEquals(
             message,
-            "Le mot de passe ne doit pas contenir d'informations personnelles comme le pseudo ou l'email"
+            "Évite d'utiliser des infos personnelles comme ton pseudo ou ton email dans le mot de passe."
         )
     }
 }

@@ -231,11 +231,10 @@ private fun dialogBody(navController: NavController) {
 
         Text(
             text = "Merci d'avoir pri le temps de rempir le formulaire d'inscription 😁 \n\n" +
-                "Pour compléter ton inscription, nous avons besoin de vérifier tes " +
-                "informations 🧐.\n\nNous t'avons envoyé une mail pour la suite de " +
-                "la procédure, une fois toutes les étapes complétées, tu pourra " +
-                "profiter pleinement de l'application !😎 Attention, le lien n'est valide " +
-                "que pendant 5 minutes",
+                "Il ne reste plus qu’à vérifier tes informations. 🧐.\n\nNous t'avons envoyé un" +
+                " mail pour la suite de t’a envoyé un mail avec la suite de la procédure. Une fois " +
+                "terminé, tu pourras profiter pleinement de l’application ! 😎 Attention, le lien " +
+                "est valide pendant 5 minutes.",
             textAlign = TextAlign.Start,
             modifier = Modifier.fillMaxWidth(),
             fontSize = 12.sp,

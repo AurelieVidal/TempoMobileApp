@@ -7,11 +7,11 @@ import com.example.tempomobileapp.adapters.HIBPApiService
 import com.example.tempomobileapp.adapters.TempoApiService
 import com.example.tempomobileapp.enums.Country
 import com.example.tempomobileapp.models.SecurityQuestion
+import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.email
 import com.example.tempomobileapp.signin.emailError
 import com.example.tempomobileapp.signin.password
 import com.example.tempomobileapp.signin.passwordCheck
-import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.passwordError
 import com.example.tempomobileapp.signin.phoneError
 import com.example.tempomobileapp.signin.phoneNumber

@@ -4,11 +4,11 @@ import android.util.Log
 import com.example.tempomobileapp.adapters.TempoApiService
 import com.example.tempomobileapp.enums.Country
 import com.example.tempomobileapp.models.SecurityQuestion
+import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.email
 import com.example.tempomobileapp.signin.emailError
 import com.example.tempomobileapp.signin.password
 import com.example.tempomobileapp.signin.passwordCheck
-import com.example.tempomobileapp.signin.checkError
 import com.example.tempomobileapp.signin.passwordError
 import com.example.tempomobileapp.signin.phoneError
 import com.example.tempomobileapp.signin.phoneNumber
@@ -25,9 +25,9 @@ private suspend fun isUsernameValid(
     onError: (String?) -> Unit
 ): Boolean {
     val errorMessage = when {
-        username.isBlank() -> "Le pseudo est obligatoire."
+        username.isBlank() -> "Tu dois choisir un pseudo."
         withContext(Dispatchers.IO) { !TempoApiService.getInstance().checkIfUserAvailable(username) } ->
-            "Ce pseudo est déjà pris."
+            "Ce pseudo est déjà utilisé."
         else -> null
     }
 
@@ -40,9 +40,10 @@ private fun isEmailValid(
     onError: (String?) -> Unit
 ): Boolean {
     val errorMessage = when {
-        email.isBlank() -> "L'email est obligatoire."
+        email.isBlank() ->
+            "Tu dois renseigner un email."
         !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()) ->
-            "L'email n'est pas valide."
+            "Cet email n'est pas valide."
         else -> null
     }
 
@@ -57,7 +58,7 @@ private fun isPhoneNumberValid(
 ): Boolean {
     val isValid = when {
         phoneNumber.isBlank() -> {
-            onError("Le numéro de téléphone est obligatoire.")
+            onError("Tu dois renseigner ton numéro de téléphone.")
             false
         }
         selectedCountry.phoneFormat == "" -> {
@@ -69,7 +70,7 @@ private fun isPhoneNumberValid(
             .replace("+", "\\+")
             .toRegex()
             .matches(phoneNumber) -> {
-            onError("Le numéro de téléphone n'est pas valide ...")
+            onError("Le numéro de téléphone que tu as entré n'est pas valide...")
             false
         }
         else -> {
@@ -108,7 +109,7 @@ internal suspend fun validateUserInputs(securityQuestions: List<SecurityQuestion
     securityQuestions.forEachIndexed { index, _ ->
         Log.d("App", "security question : ${securityQuestions[index].question}")
         if (securityAnswers[index].value.isBlank()) {
-            securityErrors[index].value = "Veuillez répondre à la question."
+            securityErrors[index].value = "Il faut que tu répondes à cette question."
             isValid = false
         }
     }
