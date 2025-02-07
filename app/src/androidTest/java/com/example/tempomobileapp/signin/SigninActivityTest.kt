@@ -156,6 +156,71 @@ class SigninActivityTest {
 
     }
 
+
+    @Test
+    fun testSignInFlowErrorApi() {
+        // Étape 1 : Lancer l'activité
+        val securityQuestionProvider: suspend () -> List<SecurityQuestion> = { listOf(
+            SecurityQuestion(1, "Question 1"),
+            SecurityQuestion(2, "Question 2"),
+            SecurityQuestion(3, "Question 3")
+        ) }
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        Log.d("App", "Avant de créer l'intent")
+        val intent = SignInActivity.createIntent(context, securityQuestionProvider)
+
+        Log.d("App", "Intent créé : $intent")
+        val scenario = ActivityScenario.launch<SignInActivity>(intent)
+
+
+        mockkObject(TempoApiService)
+        coEvery { TempoApiService.getInstance().checkIfUserAvailable(any()) } returns true
+        coEvery { TempoApiService.getInstance().createUser(any()) } throws ApiException("Erreur lors de la création de l'utilisateur")
+
+        // Mock de HIBPApiService pour la vérification du mot de passe
+        mockkObject(HIBPApiService)
+        coEvery { HIBPApiService.getInstance().checkPassword(any()) } returns false
+
+
+        // Étape 2 : Remplir les champs de l'interface utilisateur
+        composeTestRule.onNodeWithTag("usernameField").performTextInput("TestUser")
+        composeTestRule.onNodeWithTag("emailField").performTextInput("test@example.com")
+        composeTestRule.onNodeWithTag("phoneField").performTextInput("102030405")
+        composeTestRule.onNodeWithTag("passwordField").performTextInput("TeestPasswd654")
+        composeTestRule.onNodeWithTag("checkPasswordField").performTextInput("TeestPasswd654")
+        composeTestRule.onNodeWithTag("questionField1").performTextInput("Réponse 1")
+        composeTestRule.onNodeWithTag("questionField2").performTextInput("Réponse 2")
+        composeTestRule.onNodeWithTag("questionField3").performTextInput("Réponse 3")
+
+
+        // Étape 3 : Simuler un clic sur le bouton "Valider"
+        composeTestRule.onNodeWithTag("validationButton").performScrollTo()
+        composeTestRule.onNodeWithTag("validationButton").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("validationButton").performClick()
+
+        // Étape 4 : Vérifier que le Dialog s'affiche
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("signinErrorDialog")
+            .assertIsDisplayed()
+
+        // Étape 5 : Simuler un clic sur le bouton "Compris !"
+        composeTestRule.onNodeWithText("Compris !").performClick()
+
+        // Étape 6 : Vérifier la navigation vers LoginActivity
+        scenario.onActivity { activity ->
+            val expectedIntent = Intent(activity, LoginActivity::class.java)
+            val resolvedActivity = activity.packageManager.resolveActivity(expectedIntent, 0)
+            assert(resolvedActivity != null) {
+                "L'utilisateur n'a pas été redirigé vers LoginActivity."
+            }
+        }
+
+        resetSignInStates()
+
+    }
+
+
     @Test
     fun testSignInFlowErrorInInputs() {
         val securityQuestionProvider: suspend () -> List<SecurityQuestion> = { listOf(

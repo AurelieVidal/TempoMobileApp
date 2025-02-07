@@ -149,7 +149,6 @@ internal suspend fun createUser(securityQuestions: List<SecurityQuestion>, conte
     Log.d("App", "Device ID: $deviceId")
     TempoApiService.getInstance().createUser(
         UserCreate(
-
             username,
             password,
             email,
