@@ -1,4 +1,3 @@
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -86,7 +85,6 @@ fun inputPhone(
             TextField(
                 value = phoneNumber,
                 onValueChange = { newValue ->
-                    Log.d("InputPhone", "SELECTD COUNTRY: ${phoneData.selectedCountry.value.phoneFormat}")
                     if (phoneData.selectedCountry.value.phoneFormat == "") {
                         phoneNumber = newValue
                         phoneData.phoneNumber = newValue.text

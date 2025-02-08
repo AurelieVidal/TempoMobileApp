@@ -1,29 +1,41 @@
 package com.example.tempomobileapp.signin.components
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.tempomobileapp.R
+import com.example.tempomobileapp.exceptions.ApiException
 import com.example.tempomobileapp.models.SecurityQuestion
 import com.example.tempomobileapp.signin.createUser
 import com.example.tempomobileapp.signin.isLoading
+import com.example.tempomobileapp.signin.resetSignInStates
 import com.example.tempomobileapp.signin.validators.validateUserInputs
 import com.example.tempomobileapp.ui.components.MainButtonData
 import com.example.tempomobileapp.ui.components.decoration
+import com.example.tempomobileapp.ui.components.dialogCustom
 import com.example.tempomobileapp.ui.components.mainButton
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.Main2
@@ -131,13 +143,14 @@ internal fun userErrorText() {
 }
 
 @Composable
-internal fun valitationButton(
+internal fun validationButton(
     securityQuestions: List<SecurityQuestion>,
     context: Context,
     navController: NavHostController
 ) {
     val usernameErrorState = remember { mutableStateOf(false) }
     val dialogState = remember { mutableStateOf(false) }
+    val dialogErrorState = remember { mutableStateOf(false) }
 
     if (usernameErrorState.value) {
         userErrorText()
@@ -152,21 +165,15 @@ internal fun valitationButton(
         mainButton(
             MainButtonData(
                 onClick = {
-                    if (!isLoading.value) {
-                        isLoading.value = true
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val validUser = validateUserInputs(securityQuestions)
-                            if (validUser) {
-                                usernameErrorState.value = false
-                                dialogState.value = true
-                                createUser(securityQuestions, context)
-                            } else {
-                                usernameErrorState.value = true
-                                dialogState.value = false
-                            }
-                            isLoading.value = false
-                        }
-                    }
+                    handleValidation(
+                        securityQuestions,
+                        context,
+                        ValidationState(
+                            usernameErrorState,
+                            dialogState,
+                            dialogErrorState
+                        )
+                    )
                 },
                 text = "Valider",
                 color = Main4,
@@ -179,5 +186,114 @@ internal fun valitationButton(
 
     if (dialogState.value) {
         successDialog(navController)
+    }
+
+    if (dialogErrorState.value) {
+        errorDialog(navController)
+    }
+}
+
+/**
+ * data class to handle the states of the validation process
+ */
+data class ValidationState(
+    val usernameError: MutableState<Boolean>,
+    val dialog: MutableState<Boolean>,
+    val dialogError: MutableState<Boolean>
+)
+
+private fun handleValidation(
+    securityQuestions: List<SecurityQuestion>,
+    context: Context,
+    state: ValidationState
+) {
+    if (!isLoading.value) {
+        isLoading.value = true
+        CoroutineScope(Dispatchers.Main).launch {
+            val validUser = validateUserInputs(securityQuestions)
+            if (validUser) {
+                state.usernameError.value = false
+                try {
+                    createUser(securityQuestions, context)
+                    state.dialog.value = true
+                } catch (e: ApiException) {
+                    Log.d("App", "Error: ${e.message}")
+                    state.dialogError.value = true
+                }
+            } else {
+                state.usernameError.value = true
+                state.dialog.value = false
+            }
+            isLoading.value = false
+        }
+    }
+}
+
+@Composable
+fun errorDialog(navController: NavController) {
+    dialogCustom(
+        onDismiss = {
+            Log.d("App", "Closing dialog")
+            resetSignInStates()
+            navController.navigate("login")
+        },
+        testTag = "signinErrorDialog"
+    ) {
+        Column {
+            dialogContent()
+
+            Spacer(modifier = Modifier.height(32.dp))
+            mainButton(
+                MainButtonData(
+                    onClick = {
+                        Log.d("App", "Closing dialog")
+                        resetSignInStates()
+                        navController.navigate("login")
+                    },
+                    text = "Compris !",
+                    color = Main5,
+                    modifier = Modifier
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun dialogContent() {
+    Column {
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Il y a eu un problème ...",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = text,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .fillMaxWidth()
+                .testTag("errorText")
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.mental_health_sad_guy),
+            contentDescription = "App Name",
+            modifier = Modifier
+                .size(100.dp)
+                .padding(bottom = 32.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+
+        Text(
+            text = "On a un petit souci de notre côté 😕. Désolé pour ça ! On fait de notre mieux " +
+                "pour régler ça vite. Réessaye un peu plus tard !",
+            fontSize = 16.sp,
+            color = text,
+            modifier = Modifier
+                .padding(start = 2.dp, end = 2.dp, top = 0.dp, bottom = 32.dp)
+                .fillMaxWidth()
+        )
     }
 }

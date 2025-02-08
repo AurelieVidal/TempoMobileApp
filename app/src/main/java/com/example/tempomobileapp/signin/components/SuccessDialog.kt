@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,88 +26,53 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.tempomobileapp.R
 import com.example.tempomobileapp.signin.resetSignInStates
 import com.example.tempomobileapp.ui.components.MainButtonData
+import com.example.tempomobileapp.ui.components.dialogCustom
 import com.example.tempomobileapp.ui.components.mainButton
 import com.example.tempomobileapp.ui.theme.Main5
 import com.example.tempomobileapp.ui.theme.background
-import com.example.tempomobileapp.ui.theme.background_dark
 import com.example.tempomobileapp.ui.theme.text
-import com.example.tempomobileapp.utils.getLightenColor
-import com.gandiva.neumorphic.LightSource
-import com.gandiva.neumorphic.neu
-import com.gandiva.neumorphic.shape.Pressed
-import com.gandiva.neumorphic.shape.RoundedCorner
 
 @Composable
-internal fun successDialog(navController: NavController) {
-    Dialog(
-        onDismissRequest = {
-            navController.navigate("login")
-        },
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
-        )
+fun successDialog(navController: NavController) {
+    dialogCustom(
+        onDismiss = { navController.navigate("login") },
+        testTag = "signinValidationDialog"
     ) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .testTag("signinValidationDialog")
-        ) {
-            Box(
-                Modifier
-                    .align(Alignment.Center)
-                    .neu(
-                        lightShadowColor = getLightenColor(background),
-                        darkShadowColor = background_dark,
-                        shadowElevation = 4.dp,
-                        lightSource = LightSource.LEFT_TOP,
-                        shape = Pressed(RoundedCorner(16.dp))
-                    )
-                    .background(background, shape = RoundedCornerShape(16.dp))
-                    .padding(16.dp)
-            ) {
-                Column {
-                    val vectorDrawable = ContextCompat.getDrawable(
-                        LocalContext.current,
-                        R.drawable.fond_etoiles
-                    )
-                    val originalBitmap = Bitmap.createBitmap(
-                        vectorDrawable!!.intrinsicWidth,
-                        vectorDrawable.intrinsicHeight,
-                        Bitmap.Config.ARGB_8888
-                    )
+        Column {
+            val vectorDrawable = ContextCompat.getDrawable(
+                LocalContext.current,
+                R.drawable.fond_etoiles
+            )
+            val originalBitmap = Bitmap.createBitmap(
+                vectorDrawable!!.intrinsicWidth,
+                vectorDrawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
 
-                    val canvas = android.graphics.Canvas(originalBitmap)
-                    vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-                    vectorDrawable.draw(canvas)
+            val canvas = android.graphics.Canvas(originalBitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
 
-                    val scaleFactor = 2.05f
-                    val scaledBitmap = Bitmap.createScaledBitmap(
-                        originalBitmap,
-                        (originalBitmap.width * scaleFactor).toInt(),
-                        (originalBitmap.height * scaleFactor).toInt(),
-                        true
-                    )
-                    val pattern = scaledBitmap.asImageBitmap()
+            val scaleFactor = 2.05f
+            val scaledBitmap = Bitmap.createScaledBitmap(
+                originalBitmap,
+                (originalBitmap.width * scaleFactor).toInt(),
+                (originalBitmap.height * scaleFactor).toInt(),
+                true
+            )
+            val pattern = scaledBitmap.asImageBitmap()
 
-                    titleDialog(pattern)
-                    dialogBody(navController)
-                }
-            }
+            titleDialog(pattern)
+            dialogBody(navController)
         }
     }
 }
