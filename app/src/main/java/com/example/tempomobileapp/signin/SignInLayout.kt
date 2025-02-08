@@ -31,7 +31,7 @@ import com.example.tempomobileapp.signin.components.bottomDecoration
 import com.example.tempomobileapp.signin.components.midTexts
 import com.example.tempomobileapp.signin.components.topDecoration
 import com.example.tempomobileapp.signin.components.topTexts
-import com.example.tempomobileapp.signin.components.valitationButton
+import com.example.tempomobileapp.signin.components.validationButton
 import com.example.tempomobileapp.ui.theme.Main1
 import com.example.tempomobileapp.ui.theme.background
 import com.spr.jetpack_loading.components.indicators.BallPulseSyncIndicator
@@ -82,7 +82,7 @@ fun signInLayout(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     formFields(coroutineScope, securityQuestions)
-                    valitationButton(securityQuestions, context, navController)
+                    validationButton(securityQuestions, context, navController)
                 }
             }
         } else {

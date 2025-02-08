@@ -1,4 +1,3 @@
-import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -202,10 +201,8 @@ internal fun passwordField(coroutineScope: CoroutineScope) {
                         username,
                         email
                     ) { error ->
-                        Log.d("App", "error : $error")
                         passwordError = error
                     }
-                    Log.d("App", "Password error: $passwordError")
                 }
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

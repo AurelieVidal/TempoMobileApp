@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -142,7 +143,7 @@ internal fun userErrorText() {
 }
 
 @Composable
-internal fun valitationButton(
+internal fun validationButton(
     securityQuestions: List<SecurityQuestion>,
     context: Context,
     navController: NavHostController
@@ -164,26 +165,15 @@ internal fun valitationButton(
         mainButton(
             MainButtonData(
                 onClick = {
-                    if (!isLoading.value) {
-                        isLoading.value = true
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val validUser = validateUserInputs(securityQuestions)
-                            if (validUser) {
-                                usernameErrorState.value = false
-                                try {
-                                    createUser(securityQuestions, context)
-                                    dialogState.value = true
-                                } catch (e: ApiException) {
-                                    Log.d("App", "Error: ${e.message}")
-                                    dialogErrorState.value = true
-                                }
-                            } else {
-                                usernameErrorState.value = true
-                                dialogState.value = false
-                            }
-                            isLoading.value = false
-                        }
-                    }
+                    handleValidation(
+                        securityQuestions,
+                        context,
+                        ValidationState(
+                            usernameErrorState,
+                            dialogState,
+                            dialogErrorState
+                        )
+                    )
                 },
                 text = "Valider",
                 color = Main4,
@@ -200,6 +190,42 @@ internal fun valitationButton(
 
     if (dialogErrorState.value) {
         errorDialog(navController)
+    }
+}
+
+/**
+ * data class to handle the states of the validation process
+ */
+data class ValidationState(
+    val usernameError: MutableState<Boolean>,
+    val dialog: MutableState<Boolean>,
+    val dialogError: MutableState<Boolean>
+)
+
+private fun handleValidation(
+    securityQuestions: List<SecurityQuestion>,
+    context: Context,
+    state: ValidationState
+) {
+    if (!isLoading.value) {
+        isLoading.value = true
+        CoroutineScope(Dispatchers.Main).launch {
+            val validUser = validateUserInputs(securityQuestions)
+            if (validUser) {
+                state.usernameError.value = false
+                try {
+                    createUser(securityQuestions, context)
+                    state.dialog.value = true
+                } catch (e: ApiException) {
+                    Log.d("App", "Error: ${e.message}")
+                    state.dialogError.value = true
+                }
+            } else {
+                state.usernameError.value = true
+                state.dialog.value = false
+            }
+            isLoading.value = false
+        }
     }
 }
 
