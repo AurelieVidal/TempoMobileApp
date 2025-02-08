@@ -106,7 +106,7 @@ private fun formFields(coroutineScope: CoroutineScope, securityQuestions: List<S
     usernameField(coroutineScope)
     emailField()
     phoneField()
-    passwordField(coroutineScope)
+    passwordField()
     confirmPasswordField()
 
     midTexts()
